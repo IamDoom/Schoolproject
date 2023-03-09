@@ -1,6 +1,7 @@
 public class Main {
     public static void main(String[] args) {
         System.out.println("Hello world!");
+        System.out.println("kess omak");
     }
     //this a test
     // this is a second test
