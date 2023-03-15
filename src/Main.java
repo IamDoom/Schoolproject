@@ -1,4 +1,49 @@
 import java.util.Scanner;
+import java.util.ArrayList;
+
+class boat{
+    motor motor;
+    frame frame;
+    hull hull;
+
+
+}
+
+// extraparts are for parts that are later added but we are not yet sure of what to do with them.
+class extraPart{
+
+}
+
+// optional parts are parts that can be chosen but are not required by the boats
+class optionalPart{
+
+}
+class sail extends optionalPart{
+
+}
+
+//essential parts are parts that everyboat must have
+class essentialPart{
+
+}
+
+
+class motor extends essentialPart {
+
+}
+
+
+
+class frame extends essentialPart{
+
+
+
+}
+
+class hull extends essentialPart{
+
+
+}
 
 
 /* this is a program that produces quotations complying to the conditions of the client "bedrijf 42"
@@ -41,6 +86,7 @@ public class Main {
                     break;
 
             }
+
         }
     }
 }
