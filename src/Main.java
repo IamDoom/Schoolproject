@@ -1,6 +1,15 @@
 import java.util.Scanner;
 import java.util.ArrayList;
 
+class quote{
+    String clientName;
+    double price;
+    String date;
+    String orderNumber;
+    boat boat;
+
+}
+
 class boat{
     motor motor;
     frame frame;
@@ -84,6 +93,8 @@ public class Main {
                 case "option 2":
                     System.out.println("selecting or de-selecting option 2");
                     break;
+                default:
+                    System.out.println("please choose an available option");
 
             }
 
