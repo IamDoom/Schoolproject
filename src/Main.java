@@ -31,6 +31,7 @@ class OptionList {
             System.out.println("- " + option);
         }
     }
+}
 
 class shell{
     Scanner scanner = new Scanner(System.in);
@@ -144,11 +145,11 @@ public class Main {
         shell shell = new shell();
         boolean run = true;
         Scanner scanner = new Scanner(System.in);
-        while(run) {
+        while (run) {
             String input = scanner.nextLine(); //first version of inputting into console
 
             //switch case for a bar-bones version of commands and results, classes and methods have yet to be added.
-            switch(input){
+            switch (input) {
                 case "exit":
                     run = false;
                     break;
@@ -171,4 +172,5 @@ public class Main {
 
         }
     }
+
 }
