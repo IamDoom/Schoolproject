@@ -1,6 +1,37 @@
 import java.util.Scanner;
 import java.util.ArrayList;
 
+class OptionList {
+    private ArrayList<String> essentialOptions;
+    private ArrayList<String> extraOptions;
+
+    public OptionList() {
+        essentialOptions = new ArrayList<String>();
+        essentialOptions.add("hull");
+        essentialOptions.add("hull frame");
+        essentialOptions.add("deck");
+        essentialOptions.add("cabin");
+
+        extraOptions = new ArrayList<String>();
+        extraOptions.add("lifebuoys");
+        extraOptions.add("radios");
+        extraOptions.add("radars");
+        extraOptions.add("tower cranes");
+        extraOptions.add("flags and hull decoration");
+    }
+
+    public void displayOptions() {
+        System.out.println("Essential Options:");
+        for (String option : essentialOptions) {
+            System.out.println("- " + option);
+        }
+
+        System.out.println("\nExtra Options:");
+        for (String option : extraOptions) {
+            System.out.println("- " + option);
+        }
+    }
+
 class shell{
     Scanner scanner = new Scanner(System.in);
     public quote createQuote(){
@@ -16,6 +47,9 @@ class shell{
         while(shell){
 
         }
+
+    //romp, rompframe, dek, kajuit
+    //Reddingsboeien, radio's, radars, torenkranen, vlaggen en rompverfraaiing
 
 
         return quote;
