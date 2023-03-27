@@ -1,5 +1,6 @@
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.text.DecimalFormat;
 
 class OptionList {
     private ArrayList<String> essentialOptions;
@@ -135,6 +136,39 @@ class boat{
         this.serialNumber = serialNumber;
     }
 }
+/*
+class Offerte {
+    private double bootPrijs;
+    private double btwPercentage;
+    private double transportKosten;
+    private double totaalPrijs;
+
+    public Offerte(double bootPrijs, double btwPercentage, double transportKosten) {
+        this.bootPrijs = bootPrijs;
+        this.btwPercentage = btwPercentage;
+        this.transportKosten = transportKosten;
+        this.totaalPrijs = berekenTotaalPrijs();
+    }
+
+    public double berekenTotaalPrijs() {
+        double btwBedrag = bootPrijs * btwPercentage / 100;
+        double totaalPrijs = bootPrijs + btwBedrag + transportKosten;
+        return totaalPrijs;
+    }
+
+    public void printOfferte() {
+        DecimalFormat df = new DecimalFormat("#.00");
+
+        System.out.println("Offerte voor boot:");
+        System.out.println("Boot prijs: €" + df.format(bootPrijs));
+        System.out.println("BTW (" + btwPercentage + "%): €" + df.format(bootPrijs * btwPercentage / 100));
+        System.out.println("Transport kosten: €" + df.format(transportKosten));
+        System.out.println("Totaal prijs: €" + df.format(totaalPrijs));
+    }
+}
+needs to be further modified but works now as well.
+~pratik
+*/
 
 /* this is a program that produces quotations complying to the conditions of the client "bedrijf 42"
 it should run in a while loop, and we intend to work with the basis of a template */
@@ -145,6 +179,21 @@ public class Main {
         shell shell = new shell();
         boolean run = true;
         Scanner scanner = new Scanner(System.in);
+/*
+~Pratik needs to be further modified but it works now as well.
+
+        System.out.print("Voer de prijs van de boot in: ");
+        double bootPrijs = scanner.nextDouble();
+
+        System.out.print("Voer het BTW-percentage in: ");
+        double btwPercentage = scanner.nextDouble();
+
+        System.out.print("Voer de transportkosten in: ");
+        double transportKosten = scanner.nextDouble();
+
+        Offerte offerte = new Offerte(bootPrijs, btwPercentage, transportKosten);
+        offerte.printOfferte();
+*/
         while (run) {
             String input = scanner.nextLine(); //first version of inputting into console
 
@@ -172,5 +221,4 @@ public class Main {
 
         }
     }
-
 }
