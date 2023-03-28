@@ -165,12 +165,12 @@ class Offerte {
     public void printOfferte() {
         DecimalFormat df = new DecimalFormat("#.00");
 
-        System.out.println("Offerte voor boot:");
-        System.out.println("Boot prijs: €" + df.format(bootPrijs));
-        System.out.println("Milieukorting (" + milieuKorting + "%):€ "+ df.format(bootPrijs * milieuKorting / 100));
-        System.out.println("BTW (" + btwPercentage + "%): €" + df.format(bootPrijs * btwPercentage / 100));
-        System.out.println("Transport kosten: €" + df.format(transportKosten));
-        System.out.println("Totaal prijs: €" + df.format(totaalPrijs));
+        System.out.println("Price quotation for the base off the boat:");
+        System.out.println("Boat frame price: €" + df.format(bootPrijs));
+        System.out.println("Enviromental Discount (" + milieuKorting + "%):€ "+ df.format(bootPrijs * milieuKorting / 100));
+        System.out.println("VAT (" + btwPercentage + "%): €" + df.format(bootPrijs * btwPercentage / 100));
+        System.out.println("Transport costs: €" + df.format(transportKosten));
+        System.out.println("Base Price: €" + df.format(totaalPrijs));
     }
 }
 
@@ -187,16 +187,16 @@ public class Main {
 /*
 ~Pratik needs to be further modified but it works now as well.
 */
-        System.out.print("Voer de prijs van de boot in: ");
+        System.out.print("Whats the base price of the boat?: ");
         double bootPrijs = scanner.nextDouble();
 
-        System.out.print("Voer het BTW-percentage in: ");
+        System.out.print("VAT-Percentage: ");
         double btwPercentage = scanner.nextDouble();
 
-        System.out.println("Voer de Milieukorting in: ");
+        System.out.println("Enviromental discount: ");
         double milieuKorting = scanner.nextDouble();
 
-        System.out.print("Voer de transportkosten in: ");
+        System.out.print("Transport costs: ");
         double transportKosten = scanner.nextDouble();
 
         Offerte offerte = new Offerte(bootPrijs, milieuKorting, btwPercentage, transportKosten);
@@ -230,3 +230,17 @@ public class Main {
         }
     }
 }
+// Burgee = vlaggetje - €50
+//Mast = mast - €1250
+//Backstay = achterstag - €400
+//Main Sail = grootzeil - €1300
+//Jib/Genoa = fok/genua - €1000
+//Topping Lift = kraanlijn - €200
+//Forestay = voorstag - €500
+//Kicking Strap = neerhouder - €300
+//Boom = giek - €1000
+//Rudder = roer - €1000
+//Keel = kiel - €2000
+//Hull = romp - €1000
+//
+//Totaal =  10.000 euro
