@@ -164,11 +164,11 @@ class Offerte {
     public void printOfferte() {
         DecimalFormat df = new DecimalFormat("#.00");
 
-        System.out.println("Quotation for a boat:");
-        System.out.println("Boat Price: €" + df.format(bootPrijs));
-        System.out.println("environmental Discount (" + milieuKorting + "%):€ "+ df.format(bootPrijs * milieuKorting / 100));
-        System.out.println("BTW (" + btwPercentage + "%): €" + df.format(bootPrijs * btwPercentage / 100));
-        System.out.println("Delivery Fee: €" + df.format(transportKosten));
+        System.out.println("Price quotation for the base off the boat:");
+        System.out.println("Boat frame price: €" + df.format(bootPrijs));
+        System.out.println("Environmental Discount (" + milieuKorting + "%):€ "+ df.format(bootPrijs * milieuKorting / 100));
+        System.out.println("VAT (" + btwPercentage + "%): €" + df.format(bootPrijs * btwPercentage / 100));
+        System.out.println("Transport costs: €" + df.format(transportKosten));
         System.out.println("Total Discount (" + milieuKorting + "%):€ " + df.format(bootPrijs * milieuKorting / 100));
         System.out.println("Total Price: €" + df.format(totaalPrijs));
     }
@@ -187,16 +187,16 @@ public class Main {
 /*
 ~Pratik needs to be further modified but it works now as well.
 */
-        System.out.print("Enter the price of the boat: ");
+        System.out.print("Enter the base price of the boat: ");
         double bootPrijs = scanner.nextDouble();
 
         System.out.println("Enter the environmental discount in %: ");
         double milieuKorting = scanner.nextDouble();
 
-        System.out.print("Enter the BTW-percentage: ");
+        System.out.print("Enter the VAT-percentage: ");
         double btwPercentage = scanner.nextDouble();
 
-        System.out.print("Enter the delivery fee: ");
+        System.out.print("Enter the transportation cost: ");
         double transportKosten = scanner.nextDouble();
 
         Offerte offerte = new Offerte(bootPrijs, milieuKorting, btwPercentage, transportKosten);
