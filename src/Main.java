@@ -2,6 +2,25 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.text.DecimalFormat;
 
+class option{
+    private String name;
+    private double price;
+    private String description;
+
+    option(String name, double price, String description){
+        this.name = name;
+        this.price = price;
+        this.description = description;
+    }
+    option(String name, double price){
+        this.name = name;
+        this.price = price;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+}
 class OptionList {
     private ArrayList<String> essentialOptions;
     private ArrayList<String> extraOptions;
