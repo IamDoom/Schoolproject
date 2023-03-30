@@ -182,8 +182,11 @@ class Offerte {
 
     public void printOfferte() {
         DecimalFormat df = new DecimalFormat("#.00");
+        // To separate the quotations from the inserted prices
+        System.out.println();
+        System.out.println();
 
-        System.out.println("Price quotation for the base off the boat:");
+        System.out.println("Quotation for the boat:");
         System.out.println("Boat frame price: €" + df.format(bootPrijs));
         System.out.println("Environmental Discount (" + milieuKorting + "%):€ "+ df.format(bootPrijs * milieuKorting / 100));
         System.out.println("VAT (" + btwPercentage + "%): €" + df.format(bootPrijs * btwPercentage / 100));
