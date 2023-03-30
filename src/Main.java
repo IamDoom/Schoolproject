@@ -2,17 +2,17 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.text.DecimalFormat;
 
-class option{
+class Option{
     private String name;
     private double price;
     private String description;
 
-    option(String name, double price, String description){
+    Option(String name, double price, String description){
         this.name = name;
         this.price = price;
         this.description = description;
     }
-    option(String name, double price){
+    Option(String name, double price){
         this.name = name;
         this.price = price;
     }
@@ -20,35 +20,50 @@ class option{
     public void setDescription(String description) {
         this.description = description;
     }
+    public double getPrice(){
+        return this.price;
+    }
+    public String getName() {
+        return this.name;
+    }
 }
 class OptionList {
-    private ArrayList<String> essentialOptions;
-    private ArrayList<String> extraOptions;
+    private ArrayList<Option> essentialOptions;
+    private ArrayList<Option> extraOptions;
 
+    Option Hull = new Option("hull", 2.0);
+    Option HullFrame = new Option("hull frame", 2.0);
+    Option deck = new Option("deck", 2.0);
+    Option cabin = new Option("cabin", 2.0);
+    Option LifeBuoys = new Option("life buoys", 2.0);
+    Option radio = new Option("radio", 2.0);
+    Option radars = new Option("radars", 2.0);
+    Option towerCranes = new Option("tower cranes", 2.0);
+    Option flagDecor = new Option("flags decoration", 2.0);
     public OptionList() {
-        essentialOptions = new ArrayList<String>();
-        essentialOptions.add("hull");
-        essentialOptions.add("hull frame");
-        essentialOptions.add("deck");
-        essentialOptions.add("cabin");
+        essentialOptions = new ArrayList<Option>();
+        essentialOptions.add(Hull);
+        essentialOptions.add(HullFrame);
+        essentialOptions.add(deck);
+        essentialOptions.add(cabin);
 
-        extraOptions = new ArrayList<String>();
-        extraOptions.add("lifebuoys");
-        extraOptions.add("radios");
-        extraOptions.add("radars");
-        extraOptions.add("tower cranes");
-        extraOptions.add("flags and hull decoration");
+        extraOptions = new ArrayList<Option>();
+        extraOptions.add(LifeBuoys);
+        extraOptions.add(radio);
+        extraOptions.add(radars);
+        extraOptions.add(towerCranes);
+        extraOptions.add(flagDecor);
     }
 
     public void displayOptions() {
         System.out.println("Essential Options:");
-        for (String option : essentialOptions) {
-            System.out.println("- " + option);
+        for (Option option : essentialOptions) {
+            System.out.printf("<%-14S> %10s\n", option.getName(),"€"+option.getPrice());
         }
 
         System.out.println("\nExtra Options:");
-        for (String option : extraOptions) {
-            System.out.println("- " + option);
+        for (Option option : extraOptions) {
+            System.out.printf("<%4S> %-15s\n", option.getName(),"€"+option.getPrice());
         }
     }
 }
@@ -65,9 +80,6 @@ class shell{
         String orderNumber = scanner.nextLine();
         quote quote = new quote(clientName, 0.0, date, orderNumber);
 
-        while(shell){
-
-        }
 
     //romp, rompframe, dek, kajuit
     //Reddingsboeien, radio's, radars, torenkranen, vlaggen en rompverfraaiing
@@ -209,6 +221,10 @@ public class Main {
 /*
 ~Pratik needs to be further modified but it works now as well.
 */
+
+        OptionList optionlist = new OptionList();
+        optionlist.displayOptions();
+
         System.out.print("Enter the base price of the boat: ");
         double bootPrijs = scanner.nextDouble();
 
