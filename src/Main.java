@@ -54,6 +54,14 @@ class OptionList {
         extraOptions.add(towerCranes);
         extraOptions.add(flagDecor);
     }
+    public void addOption(Option option, boolean isEssential) {
+        if (isEssential) {
+            essentialOptions.add(option);
+        } else {
+            extraOptions.add(option);
+        }
+    }
+
 
     public void displayOptions() {
         System.out.println("Essential Options:");
@@ -70,6 +78,13 @@ class OptionList {
 
 class shell{
     Scanner scanner = new Scanner(System.in);
+    boat boat = new boat();
+    OptionList optionList;
+
+    public shell() {
+        this.optionList = new OptionList();
+    }
+
     public quote createQuote(){
         boolean shell = true;
         System.out.println("client Name?");
@@ -80,14 +95,37 @@ class shell{
         String orderNumber = scanner.nextLine();
         quote quote = new quote(clientName, 0.0, date, orderNumber);
 
+        System.out.println("Voeg nieuwe opties toe? (ja/nee)");
+        String answer = scanner.nextLine();
+        while (answer.equalsIgnoreCase("ja")) {
+            System.out.println("Optienaam?");
+            String name = scanner.nextLine();
+            System.out.println("Prijs?");
+            double price = scanner.nextDouble();
+            scanner.nextLine();
+            System.out.println("Is deze optie essentieel? (ja/nee)");
+            boolean isEssential = scanner.nextLine().equalsIgnoreCase("ja");
+            Option option = new Option(name, price);
+            option.setDescription("Beschrijving van " + name);
+            optionList.addOption(option, isEssential);
+            System.out.println("Voeg nog een optie toe? (ja/nee)");
+            answer = scanner.nextLine();
+        }
 
-    //romp, rompframe, dek, kajuit
-    //Reddingsboeien, radio's, radars, torenkranen, vlaggen en rompverfraaiing
-
+        System.out.println("Voeg nieuwe klanttype toe? (ja/nee)");
+        answer = scanner.nextLine();
+        while (answer.equalsIgnoreCase("ja")) {
+            System.out.println("Klanttype?");
+            String customerType = scanner.nextLine();
+            boat.setCustomerType(customerType);
+            System.out.println("Voeg nog een klanttype toe? (ja/nee)");
+            answer = scanner.nextLine();
+        }
 
         return quote;
     }
 }
+
 
 class quote{
     private String clientName;
@@ -142,6 +180,7 @@ class boat{
     private String type;
     private String name;
     private String serialNumber;
+    private String customerType;
 
     public String getType() {
         return type;
@@ -166,7 +205,13 @@ class boat{
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
+    public void setCustomerType(String customerType) {
+        this.customerType = customerType;
+    }
+
 }
+
+
 /*needs to be further modified but works now as well.
 ~pratik
 */
@@ -211,16 +256,19 @@ it should run in a while loop, and we intend to work with the basis of a templat
 
 
 public class Main {
+    private  OptionList optionlist = new OptionList();
     public static void main(String[] args) {
         shell shell = new shell();
         boolean run = true;
         Scanner scanner = new Scanner(System.in);
+        Main main = new Main();
 /*
 ~Pratik needs to be further modified but it works now as well.
 */
 
         OptionList optionlist = new OptionList();
         optionlist.displayOptions();
+        shell.createQuote();
 
         System.out.print("Enter the base price of the boat: ");
         double bootPrijs = scanner.nextDouble();
