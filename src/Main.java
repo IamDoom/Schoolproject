@@ -5,16 +5,19 @@ import java.text.DecimalFormat;
 class Option{
     private String name;
     private double price;
+    private boolean essential;
     private String description;
 
-    Option(String name, double price, String description){
+    Option(String name, double price, boolean essential ,String description){
         this.name = name;
         this.price = price;
+        this.essential = essential;
         this.description = description;
     }
-    Option(String name, double price){
+    Option(String name, double price,boolean essential){
         this.name = name;
         this.price = price;
+        this.essential = essential;
     }
 
     public void setDescription(String description) {
@@ -28,19 +31,23 @@ class Option{
     }
 }
 class OptionList {
+    Scanner scanner = new Scanner(System.in);
+
     private ArrayList<Option> essentialOptions;
     private ArrayList<Option> extraOptions;
 
-    Option Hull = new Option("hull", 2.0);
-    Option HullFrame = new Option("hull frame", 2.0);
-    Option deck = new Option("deck", 2.0);
-    Option cabin = new Option("cabin", 2.0);
-    Option LifeBuoys = new Option("life buoys", 2.0);
-    Option radio = new Option("radio", 2.0);
-    Option radars = new Option("radars", 2.0);
-    Option towerCranes = new Option("tower cranes", 2.0);
-    Option flagDecor = new Option("flags decoration", 2.0);
+    Option Hull = new Option("hull", 2.0,true);
+    Option HullFrame = new Option("hull frame", 2.0,true);
+    Option deck = new Option("deck", 2.0,true);
+    Option cabin = new Option("cabin", 2.0,true);
+    Option LifeBuoys = new Option("life buoys", 2.0,true);
+    Option radio = new Option("radio", 2.0,true);
+    Option radars = new Option("radars", 2.0,true);
+    Option towerCranes = new Option("tower cranes", 2.0,true);
+    Option flagDecor = new Option("flags decoration", 2.0,true);
+
     public OptionList() {
+
         essentialOptions = new ArrayList<Option>();
         essentialOptions.add(Hull);
         essentialOptions.add(HullFrame);
@@ -54,12 +61,22 @@ class OptionList {
         extraOptions.add(towerCranes);
         extraOptions.add(flagDecor);
     }
-    public void addOption(Option option, boolean isEssential) {
-        if (isEssential) {
+
+    public Option createOption() {
+        System.out.println("Optienaam?");
+        String name = scanner.nextLine().strip();
+        System.out.println("Prijs?");
+        double price = scanner.nextDouble();
+        System.out.println("Is deze optie essentieel?");
+        boolean essential = scanner.hasNextBoolean();
+
+        Option option = new Option(name, price, essential);
+        if (essential) {
             essentialOptions.add(option);
         } else {
             extraOptions.add(option);
         }
+        return option;
     }
 
 
@@ -88,41 +105,32 @@ class shell{
     public quote createQuote(){
         boolean shell = true;
         System.out.println("client Name?");
-        String clientName = scanner.nextLine();
+        String clientName = scanner.nextLine().strip();
+        System.out.println("customer type");
+        String customerType = scanner.nextLine().strip();
         System.out.println("date? (dd-mm-yy)");
         String date = scanner.nextLine();
         System.out.println("ordernummer?");
         String orderNumber = scanner.nextLine();
-        quote quote = new quote(clientName, date, orderNumber);
+        quote quote = new quote(clientName, customerType ,date, orderNumber);
         quote.setQuoteDetails();
+        String input = scanner.nextLine().strip();
+        switch (input) {
+            case "create" -> {
+                Option optiontest = this.optionList.createOption();
+            }
+            case " " -> {
 
+            }
+        }
         System.out.println("Voeg nieuwe opties toe? (ja/nee)");
         String answer = scanner.nextLine();
         while (answer.equalsIgnoreCase("ja")) {
-            System.out.println("Optienaam?");
-            String name = scanner.nextLine();
-            System.out.println("Prijs?");
-            double price = scanner.nextDouble();
-            scanner.nextLine();
-            System.out.println("Is deze optie essentieel? (ja/nee)");
-            boolean isEssential = scanner.nextLine().equalsIgnoreCase("ja");
-            Option option = new Option(name, price);
-            option.setDescription("Beschrijving van " + name);
-            optionList.addOption(option, isEssential);
+            Option option = this.optionList.createOption();
+            option.setDescription("Beschrijving van " + option.getName());
             System.out.println("Voeg nog een optie toe? (ja/nee)");
             answer = scanner.nextLine();
         }
-
-        System.out.println("Voeg nieuwe klanttype toe? (ja/nee)");
-        answer = scanner.nextLine();
-        while (answer.equalsIgnoreCase("ja")) {
-            System.out.println("Klanttype?");
-            String customerType = scanner.nextLine();
-            boat.setCustomerType(customerType);
-            System.out.println("Voeg nog een klanttype toe? (ja/nee)");
-            answer = scanner.nextLine();
-        }
-
         return quote;
     }
 }
@@ -131,6 +139,7 @@ class shell{
 class quote{
     Scanner scanner = new Scanner(System.in);
     private String clientName;
+    private String customerType;
     private String date;
     private String orderNumber;
     private boat boat;
@@ -140,8 +149,10 @@ class quote{
     private double totaalprijs;
     private double milieuKorting;
 
-    quote(String clientName,  String date, String orderNumber){
+
+    quote(String clientName, String customerType ,String date, String orderNumber){
         this.clientName = clientName;
+        this.customerType = customerType;
         this.date = date;
         this.orderNumber = orderNumber;
     }
@@ -245,17 +256,14 @@ it should run in a while loop, and we intend to work with the basis of a templat
 public class Main {
     private  OptionList optionlist = new OptionList();
     public static void main(String[] args) {
-        shell shell = new shell();
         boolean run = true;
         Scanner scanner = new Scanner(System.in);
         Main main = new Main();
         OptionList optionlist = new OptionList();
         optionlist.displayOptions();
-        shell.createQuote();
 
         while (run) {
             String input = scanner.nextLine(); //first version of inputting into console
-
             //switch case for a bar-bones version of commands and results, classes and methods have yet to be added.
             switch (input) {
                 case "exit":
@@ -269,6 +277,7 @@ public class Main {
                     run = false;
                     break;
                 case "create":
+                    shell shell = new shell();
                     System.out.println("creating quote");
                     quote quote = shell.createQuote();
                     break;
