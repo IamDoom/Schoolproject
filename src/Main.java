@@ -93,7 +93,8 @@ class shell{
         String date = scanner.nextLine();
         System.out.println("ordernummer?");
         String orderNumber = scanner.nextLine();
-        quote quote = new quote(clientName, 0.0, date, orderNumber);
+        quote quote = new quote(clientName, date, orderNumber);
+        quote.setQuoteDetails();
 
         System.out.println("Voeg nieuwe opties toe? (ja/nee)");
         String answer = scanner.nextLine();
@@ -128,37 +129,65 @@ class shell{
 
 
 class quote{
+    Scanner scanner = new Scanner(System.in);
     private String clientName;
-    private double price;
     private String date;
     private String orderNumber;
     private boat boat;
+    private double bootPrijs;
+    private double btwPercentage;
+    private double transportKosten;
+    private double totaalprijs;
+    private double milieuKorting;
 
-    quote(String clientName, double price, String date, String orderNumber){
-        clientName = this.clientName;
-        price = this.price;
-        date = this.date;
-        orderNumber = this.orderNumber;
+    quote(String clientName,  String date, String orderNumber){
+        this.clientName = clientName;
+        this.date = date;
+        this.orderNumber = orderNumber;
     }
 
+    public void setQuoteDetails(){
+        System.out.print("Enter the base price of the boat: ");
+        this.bootPrijs = scanner.nextDouble();
+        System.out.println("Enter the environmental discount in %: ");
+        this.milieuKorting = scanner.nextDouble();
+        System.out.print("Enter the VAT-percentage: ");
+        this.btwPercentage = scanner.nextDouble();
+        System.out.print("Enter the transportation cost: ");
+        this.transportKosten = scanner.nextDouble();
+    }
+    public double calculateTotal(){
+        double vatAmount = this.bootPrijs*this.btwPercentage/100;
+        double enviromentalDiscount = this.bootPrijs*this.milieuKorting/100;
+        double total = bootPrijs+enviromentalDiscount+vatAmount+this.transportKosten;
 
+        return total;
+    }
+
+    public void printQuote(){
+        DecimalFormat df = new DecimalFormat("#.00");
+
+        System.out.println("Price quotation for the base off the boat:");
+        System.out.println("Boat frame price: €" + df.format(this.bootPrijs));
+        System.out.println("Environmental Discount (" + this.milieuKorting + "%):€ "+ df.format(this.bootPrijs * this.milieuKorting / 100));
+        System.out.println("VAT (" + this.btwPercentage + "%): €" + df.format(this.bootPrijs * this.btwPercentage / 100));
+        System.out.println("Transport costs: €" + df.format(this.transportKosten));
+        System.out.println("Total Discount (" + this.milieuKorting + "%):€ " + df.format(this.bootPrijs * this.milieuKorting / 100));
+        System.out.println("Total Price: €" + df.format(this.totaalprijs));
+    }
 
     public String getClientName() {
         return clientName;
     }
-
     public void setClientName(String clientName) {
         this.clientName = clientName;
     }
-
     public String getDate() {
         return date;
     }
-
     public void setDate(String date) {
         this.date = date;
     }
-
     public String getOrderNumber() {
         return orderNumber;
     }
@@ -166,11 +195,9 @@ class quote{
     public void setOrderNumber(String orderNumber) {
         this.orderNumber = orderNumber;
     }
-
     public boat getBoat() {
         return boat;
     }
-
     public void setBoat(boat boat) {
         this.boat = boat;
     }
@@ -211,46 +238,6 @@ class boat{
 
 }
 
-
-/*needs to be further modified but works now as well.
-~pratik
-*/
-class Offerte {
-    private double bootPrijs;
-    private double btwPercentage;
-    private double transportKosten;
-    private double totaalPrijs;
-    private double milieuKorting;
-
-    public Offerte(double bootPrijs, double milieuKorting, double btwPercentage, double transportKosten) {
-        this.bootPrijs = bootPrijs;
-        this.btwPercentage = btwPercentage;
-        this.transportKosten = transportKosten;
-        this.milieuKorting = milieuKorting;
-        this.totaalPrijs = berekenTotaalPrijs();
-    }
-
-    public double berekenTotaalPrijs() {
-        double btwBedrag = bootPrijs * btwPercentage / 100;
-        double MilieuKorting = bootPrijs * milieuKorting / 100;
-        double totaalPrijs = bootPrijs + MilieuKorting + btwBedrag + transportKosten;
-        return totaalPrijs;
-    }
-
-    public void printOfferte() {
-        DecimalFormat df = new DecimalFormat("#.00");
-
-        System.out.println("Price quotation for the base off the boat:");
-        System.out.println("Boat frame price: €" + df.format(bootPrijs));
-        System.out.println("Environmental Discount (" + milieuKorting + "%):€ "+ df.format(bootPrijs * milieuKorting / 100));
-        System.out.println("VAT (" + btwPercentage + "%): €" + df.format(bootPrijs * btwPercentage / 100));
-        System.out.println("Transport costs: €" + df.format(transportKosten));
-        System.out.println("Total Discount (" + milieuKorting + "%):€ " + df.format(bootPrijs * milieuKorting / 100));
-        System.out.println("Total Price: €" + df.format(totaalPrijs));
-    }
-}
-
-
 /* this is a program that produces quotations complying to the conditions of the client "bedrijf 42"
 it should run in a while loop, and we intend to work with the basis of a template */
 
@@ -262,28 +249,9 @@ public class Main {
         boolean run = true;
         Scanner scanner = new Scanner(System.in);
         Main main = new Main();
-/*
-~Pratik needs to be further modified but it works now as well.
-*/
-
         OptionList optionlist = new OptionList();
         optionlist.displayOptions();
         shell.createQuote();
-
-        System.out.print("Enter the base price of the boat: ");
-        double bootPrijs = scanner.nextDouble();
-
-        System.out.println("Enter the environmental discount in %: ");
-        double milieuKorting = scanner.nextDouble();
-
-        System.out.print("Enter the VAT-percentage: ");
-        double btwPercentage = scanner.nextDouble();
-
-        System.out.print("Enter the transportation cost: ");
-        double transportKosten = scanner.nextDouble();
-
-        Offerte offerte = new Offerte(bootPrijs, milieuKorting, btwPercentage, transportKosten);
-        offerte.printOfferte();
 
         while (run) {
             String input = scanner.nextLine(); //first version of inputting into console
