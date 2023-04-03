@@ -66,12 +66,12 @@ class OptionList {
     public void displayOptions() {
         System.out.println("Essential Options:");
         for (Option option : essentialOptions) {
-            System.out.printf("<%-14S> %10s\n", option.getName(),"€"+option.getPrice());
+            System.out.printf("\t%-17S> %15s\n", option.getName(),"€"+option.getPrice());
         }
 
         System.out.println("\nExtra Options:");
         for (Option option : extraOptions) {
-            System.out.printf("<%4S> %-15s\n", option.getName(),"€"+option.getPrice());
+            System.out.printf("\t%-17S> %15s\n", option.getName(),"€"+option.getPrice());
         }
     }
 }
