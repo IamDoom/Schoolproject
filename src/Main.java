@@ -196,6 +196,15 @@ class Overheid extends Klantentype{
     }
 }
 
+class MaakOp{
+    public void printOfferte(){
+
+    }
+    public void MaakOp(){
+
+    }
+}
+
 
 
 class quote{
