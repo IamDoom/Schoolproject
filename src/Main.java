@@ -174,6 +174,8 @@ class quote{
         this.btwPercentage = scanner.nextDouble();
         System.out.print("Enter the transportation cost: ");
         this.transportKosten = scanner.nextDouble();
+        printQuote();
+
     }
     public double calculateTotal(){
         double vatAmount = this.bootPrijs*this.btwPercentage/100;
@@ -192,7 +194,7 @@ class quote{
         System.out.println("VAT (" + this.btwPercentage + "%): €" + df.format(this.bootPrijs * this.btwPercentage / 100));
         System.out.println("Transport costs: €" + df.format(this.transportKosten));
         System.out.println("Total Discount (" + this.milieuKorting + "%):€ " + df.format(this.bootPrijs * this.milieuKorting / 100));
-        System.out.println("Total Price: €" + df.format(this.totaalprijs));
+        System.out.println("Total Price: €" + df.format(this.calculateTotal()));
     }
 
     public String getClientName() {
