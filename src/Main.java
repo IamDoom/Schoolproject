@@ -68,9 +68,8 @@ class OptionList {
         String name = scanner.nextLine().strip();
         System.out.print("Prijs? ");
         double price = scanner.nextDouble();
-        System.out.print("Is deze optie essentieel? ");
-        boolean essential = scanner.nextBoolean();
-
+        scanner.nextLine(); //to prevent nextdouble from eating;
+        boolean essential = essentialOrNot();
         Option option = new Option(name, price, essential);
         if (essential) {
             essentialOptions.add(option);
@@ -92,6 +91,24 @@ class OptionList {
             System.out.printf("\t%-17S> %15s\n", option.getName(),"€"+option.getPrice());
         }
     }
+
+    private boolean essentialOrNot() {
+
+        while (true) {
+            System.out.print("Is deze optie essentieel? ");
+            String input = scanner.nextLine().strip().toLowerCase();
+            switch (input) {
+                case "yes" -> {
+                    return true;
+                }
+                case "no" -> {
+                    return false;
+                }
+                default -> System.out.println("illegal input please enter 'yes' or 'no'");
+            }
+        }
+    }
+
 }
 
 class shell{
@@ -104,6 +121,7 @@ class shell{
         boolean shell = true;
         System.out.print("client Name? ");
         String clientName = scanner.nextLine().strip();
+
         Klant klant = new Klant(clientName);
         System.out.print("customer type ");
         String customerType = scanner.nextLine().strip();
@@ -114,8 +132,8 @@ class shell{
 
         quote quote = new quote(klant, date, orderNumber);
         quote.setQuoteDetails();
-        String input = scanner.nextLine().strip();
         while(shell) {
+            String input = scanner.nextLine().strip();
             switch (input) {
                 case "create" -> {
                     Option optiontest = this.optionList.createOption();
@@ -131,15 +149,12 @@ class shell{
                 case "exit" -> {
                     return quote;
                 }
+                case "help" -> {
+                    System.out.println("hier komt een lijst met termen en wellicht een beschrijving");
             }
-        }
-        System.out.println("Voeg nieuwe opties toe? (ja/nee)");
-        String answer = scanner.nextLine();
-        while (answer.equalsIgnoreCase("ja")) {
-            Option option = this.optionList.createOption();
-            option.setDescription("Beschrijving van " + option.getName());
-            System.out.println("Voeg nog een optie toe? (ja/nee)");
-            answer = scanner.nextLine();
+
+                default -> System.out.println("please use a valid input use 'help' for help");
+            }
         }
         return quote;
     }
