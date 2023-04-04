@@ -147,7 +147,7 @@ class shell{
 class Klant{
     private String naam;
     private Klantentype klantentype;
-    public Klant(String name){
+    public Klant(String naam){
         this.naam = naam;
     }
     public Klant(String name, Klantentype klantentype){
