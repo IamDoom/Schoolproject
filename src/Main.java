@@ -104,13 +104,15 @@ class shell{
         boolean shell = true;
         System.out.print("client Name? ");
         String clientName = scanner.nextLine().strip();
+        Klant klant = new Klant(clientName);
         System.out.print("customer type ");
         String customerType = scanner.nextLine().strip();
         System.out.print("date? (dd-mm-yy) ");
         String date = scanner.nextLine();
         System.out.print("ordernummer? ");
         String orderNumber = scanner.nextLine();
-        quote quote = new quote(clientName, customerType ,date, orderNumber);
+
+        quote quote = new quote(klant, date, orderNumber);
         quote.setQuoteDetails();
         String input = scanner.nextLine().strip();
         while(shell) {
@@ -142,12 +144,81 @@ class shell{
         return quote;
     }
 }
+class Klant{
+    private String naam;
+    private Klantentype klantentype;
+    public Klant(String naam){
+        this.naam = naam;
+    }
+    public Klant(String name, Klantentype klantentype){
+        this(name);
+        this.klantentype = klantentype;
+    }
+
+
+    public String getNaam() {
+        return naam;
+    }
+
+    public Klantentype getKlantentype() {
+        return klantentype;
+    }
+}
+abstract class Klantentype{
+    private String naam;
+    private double hoeveelheidkorting;
+
+
+    public Klantentype(String naam) {
+        this.naam = naam;
+    }
+
+    public String getNaam(){
+        return naam;
+    }
+    public double getKorting(){
+        return hoeveelheidkorting;
+    }
+
+}
+class Particulier extends Klantentype{
+
+
+    public Particulier(String naam) {
+        super(naam);
+    }
+}
+
+class Bedrijf extends Klantentype{
+
+
+    public Bedrijf(String naam) {
+        super(naam);
+    }
+}
+
+class Overheid extends Klantentype{
+
+
+    public Overheid(String naam) {
+        super(naam);
+    }
+}
+
+class MaakOp{
+    public void printOfferte(){
+
+    }
+    public void MaakOp(){
+
+    }
+}
+
 
 
 class quote{
     Scanner scanner = new Scanner(System.in);
-    private String clientName;
-    private String customerType;
+    private Klant klant;
     private String date;
     private String orderNumber;
     private boat boat;
@@ -158,12 +229,12 @@ class quote{
     private double milieuKorting;
 
 
-    quote(String clientName, String customerType ,String date, String orderNumber){
-        this.clientName = clientName;
-        this.customerType = customerType;
+    quote(Klant klant, String date, String orderNumber){
+        this.klant = klant;
         this.date = date;
         this.orderNumber = orderNumber;
     }
+
 
     public void setQuoteDetails(){
         System.out.print("Enter the base price of the boat: ");
@@ -197,11 +268,14 @@ class quote{
         System.out.println("Total Price: €" + df.format(this.calculateTotal()));
     }
 
-    public String getClientName() {
-        return clientName;
+    public Klant getKlant() {
+        return klant;
     }
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
+
+
+
+    public void setKlant(Klant klant) {
+        this.klant = klant;
     }
     public String getDate() {
         return date;
