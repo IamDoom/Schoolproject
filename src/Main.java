@@ -142,6 +142,60 @@ class shell{
         return quote;
     }
 }
+class Klant{
+    private String naam;
+    private Klantentype klantentype;
+
+
+    public String getNaam() {
+        return naam;
+    }
+
+    public Klantentype getKlantentype() {
+        return klantentype;
+    }
+}
+abstract class Klantentype{
+    private String naam;
+    private double hoeveelheidkorting;
+
+
+    public Klantentype(String naam) {
+        this.naam = naam;
+    }
+
+    public String getNaam(){
+        return naam;
+    }
+    public double getKorting(){
+        return hoeveelheidkorting;
+    }
+
+}
+class Particulier extends Klantentype{
+
+
+    public Particulier(String naam) {
+        super(naam);
+    }
+}
+
+class Bedrijf extends Klantentype{
+
+
+    public Bedrijf(String naam) {
+        super(naam);
+    }
+}
+
+class Overheid extends Klantentype{
+
+
+    public Overheid(String naam) {
+        super(naam);
+    }
+}
+
 
 
 class quote{
