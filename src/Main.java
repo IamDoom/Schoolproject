@@ -146,7 +146,7 @@ class shell{
 
                 }
                 case "exit" -> {
-                    return quote;
+                    shell = false;
                 }
                 case "help" -> {
                     System.out.println("hier komt een lijst met termen en wellicht een beschrijving");
@@ -279,8 +279,7 @@ class quote{
     public double calculateTotal(){
         double vatAmount = this.bootPrijs*this.btwPercentage/100;
         double enviromentalDiscount = this.bootPrijs*this.milieuKorting/100;
-        double total = bootPrijs+enviromentalDiscount+vatAmount+this.transportKosten;
-        this.totaalprijs = total;
+        this.totaalprijs = bootPrijs+enviromentalDiscount+vatAmount+this.transportKosten;
         return this.totaalprijs;
     }
 
@@ -327,6 +326,10 @@ class quote{
     public void setBoat(boat boat) {
         this.boat = boat;
     }
+
+}
+
+class boatList{
 
 }
 
