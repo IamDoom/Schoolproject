@@ -243,6 +243,8 @@ class quote{
     private double totaalprijs;
     private double milieuKorting;
 
+    quote(){}
+
 
     quote(Klant klant, String date, String orderNumber){
         this.klant = klant;
@@ -260,8 +262,6 @@ class quote{
         this.btwPercentage = scanner.nextDouble();
         System.out.print("Enter the transportation cost: ");
         this.transportKosten = scanner.nextDouble();
-        printQuote();
-
     }
     public double calculateTotal(){
         double vatAmount = this.bootPrijs*this.btwPercentage/100;
@@ -359,8 +359,8 @@ public class Main {
     public static void main(String[] args) {
         boolean run = true;
         Scanner scanner = new Scanner(System.in);
-        //Main main = new Main();
-
+        shell shell = new shell();
+        quote quote = new quote();
         while (run) {
             String input = scanner.nextLine(); //first version of inputting into console
             //switch case for a bar-bones version of commands and results, classes and methods have yet to be added.
@@ -369,16 +369,16 @@ public class Main {
                     run = false;
                     break;
                 case "print":
-                    System.out.println("printing current quota");
+                    quote.printQuote();
                     break;
                 case "finalize":
                     System.out.println("printing and storing quota before shutting down");
                     run = false;
                     break;
                 case "create":
-                    shell shell = new shell();
+
                     System.out.println("creating quote");
-                    quote quote = shell.createQuote();
+                    quote = shell.createQuote();
                     break;
                 default:
                     System.out.println("please choose an available option");
