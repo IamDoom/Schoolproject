@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.text.DecimalFormat;
 
 class Option{
+
     private String name;
     private double price;
     private boolean essential;
@@ -33,6 +34,7 @@ class Option{
 
 class OptionList {
     Scanner scanner = new Scanner(System.in);
+    DecimalFormat df = new DecimalFormat("#0.00");
 
     private ArrayList<Option> essentialOptions;
     private ArrayList<Option> extraOptions;
@@ -83,12 +85,12 @@ class OptionList {
     public void displayOptions() {
         System.out.println("Essential Options:");
         for (Option option : essentialOptions) {
-            System.out.printf("\t%-17S> %15s\n", option.getName(),"€"+option.getPrice());
+            System.out.printf("\t%-17S> %15s\n", option.getName(),"€"+df.format(option.getPrice()));
         }
 
         System.out.println("\nExtra Options:");
         for (Option option : extraOptions) {
-            System.out.printf("\t%-17S> %15s\n", option.getName(),"€"+option.getPrice());
+            System.out.printf("\t%-17S> %15s\n", option.getName(),"€"+df.format(option.getPrice()));
         }
     }
 
@@ -221,10 +223,12 @@ class Overheid extends Klantentype{
 }
 
 class MaakOp{
+    DecimalFormat df = new DecimalFormat("#0.00");
     public void printOfferte(){
 
     }
-    public void MaakOp(){
+    public void opmaken(String input, double getal){
+        System.out.printf("%-40s %15s\n",input,"€"+df.format(getal));
 
     }
 }
@@ -232,7 +236,9 @@ class MaakOp{
 
 
 class quote{
+    MaakOp opmaak = new MaakOp();
     Scanner scanner = new Scanner(System.in);
+
     private Klant klant;
     private String date;
     private String orderNumber;
@@ -267,20 +273,20 @@ class quote{
         double vatAmount = this.bootPrijs*this.btwPercentage/100;
         double enviromentalDiscount = this.bootPrijs*this.milieuKorting/100;
         double total = bootPrijs+enviromentalDiscount+vatAmount+this.transportKosten;
-
-        return total;
+        this.totaalprijs = total;
+        return this.totaalprijs;
     }
 
     public void printQuote(){
-        DecimalFormat df = new DecimalFormat("#.00");
 
-        System.out.println("Price quotation for the base off the boat:");
-        System.out.println("Boat frame price: €" + df.format(this.bootPrijs));
-        System.out.println("Environmental Discount (" + this.milieuKorting + "%):€ "+ df.format(this.bootPrijs * this.milieuKorting / 100));
-        System.out.println("VAT (" + this.btwPercentage + "%): €" + df.format(this.bootPrijs * this.btwPercentage / 100));
-        System.out.println("Transport costs: €" + df.format(this.transportKosten));
-        System.out.println("Total Discount (" + this.milieuKorting + "%):€ " + df.format(this.bootPrijs * this.milieuKorting / 100));
-        System.out.println("Total Price: €" + df.format(this.calculateTotal()));
+
+        System.out.println("Price quotation for the base off the boat\n");
+        opmaak.opmaken("Boat frame price:", this.bootPrijs);
+        opmaak.opmaken("Environmental Discount (" + this.milieuKorting + "%): ", (this.bootPrijs * this.milieuKorting / 100));
+        opmaak.opmaken("VAT (" + Double.toString(this.btwPercentage) + "%):" , (this.bootPrijs * this.btwPercentage / 100));
+        opmaak.opmaken("Transport costs:" , this.transportKosten);
+        opmaak.opmaken("Total Discount (" + Double.toString(this.milieuKorting) + "%):" , (this.bootPrijs * this.milieuKorting / 100));
+        opmaak.opmaken("Total Price: " , this.calculateTotal());
     }
 
     public Klant getKlant() {
