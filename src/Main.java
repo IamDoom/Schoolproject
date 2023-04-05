@@ -2,35 +2,37 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.text.DecimalFormat;
 
-class Option{
-
+class Option {
     private String name;
     private double price;
     private boolean essential;
     private String description;
+    private double discount;
 
-    Option(String name, double price, boolean essential ,String description){
+    Option(String name, double price, boolean essential, String description) {
         this.name = name;
         this.price = price;
         this.essential = essential;
         this.description = description;
+        this.discount = 0.0;
     }
-    Option(String name, double price,boolean essential){
-        this.name = name;
-        this.price = price;
-        this.essential = essential;
+    Option(String name, double price, boolean essential) {
+        this(name, price, essential, null);
     }
-
     public void setDescription(String description) {
         this.description = description;
     }
-    public double getPrice(){
-        return this.price;
+    public void setEcoDiscount(double discount) {
+        this.discount = discount;
+    }
+    public double getPrice() {
+        return this.price * (1 - this.discount);
     }
     public String getName() {
         return this.name;
     }
 }
+
 
 class OptionList {
     Scanner scanner = new Scanner(System.in);
@@ -63,6 +65,16 @@ class OptionList {
         extraOptions.add(radars);
         extraOptions.add(towerCranes);
         extraOptions.add(flagDecor);
+
+        Hull.setEcoDiscount(0.1);
+        HullFrame.setEcoDiscount(0.1);
+        deck.setEcoDiscount(0.1);
+        cabin.setEcoDiscount(0.1);
+        LifeBuoys.setEcoDiscount(0.1);
+        radio.setEcoDiscount(0.1);
+        radars.setEcoDiscount(0.1);
+        towerCranes.setEcoDiscount(0.1);
+        flagDecor.setEcoDiscount(0.1);
     }
 
     public Option createOption() {
@@ -85,12 +97,11 @@ class OptionList {
     public void displayOptions() {
         System.out.println("Essential Options:");
         for (Option option : essentialOptions) {
-            System.out.printf("\t%-17S> %15s\n", option.getName(),"€"+df.format(option.getPrice()));
+            System.out.printf("\t%-17S> %15s\n", option.getName(), "€" + df.format(option.getPrice()));
         }
-
         System.out.println("\nExtra Options:");
         for (Option option : extraOptions) {
-            System.out.printf("\t%-17S> %15s\n", option.getName(),"€"+df.format(option.getPrice()));
+            System.out.printf("\t%-17S> %15s\n", option.getName(), "€" + df.format(option.getPrice()));
         }
     }
 
@@ -110,6 +121,32 @@ class OptionList {
             }
         }
     }
+    public void setOptionDiscount() {
+        System.out.print("To which option do you want to make a change? ");
+        String name = scanner.nextLine().strip();
+        for (Option option : essentialOptions) {
+            if (option.getName().equalsIgnoreCase(name)) {
+                System.out.print("New eco-discount? ");
+                double discount = scanner.nextDouble();
+                scanner.nextLine();
+                option.setEcoDiscount(discount);
+                System.out.println("Eco-discount changed!");
+                return;
+            }
+        }
+        for (Option option : extraOptions) {
+            if (option.getName().equalsIgnoreCase(name)) {
+                System.out.print("New eco-discount? ");
+                double ecoDiscount = scanner.nextDouble();
+                scanner.nextLine();
+                option.setEcoDiscount(ecoDiscount);
+                System.out.println("Eco-discount changed!");
+                return;
+            }
+        }
+        System.out.println("Option unavailable!");
+    }
+
 
 }
 
@@ -126,7 +163,7 @@ class shell{
         String customerType = scanner.nextLine().strip();
         System.out.print("date? (dd-mm-yy) ");
         String date = scanner.nextLine();
-        System.out.print("ordernummer? ");
+        System.out.print("order number? ");
         String orderNumber = scanner.nextLine();
 
         quote quote = new quote(klant, date, orderNumber);
@@ -141,6 +178,10 @@ class shell{
                 case "add" -> {     // for adding parts to the ship being built
 
                 }
+                case "discount" -> {
+                    optionList.setOptionDiscount();
+                }
+
                 case "list" -> {
                     optionList.displayOptions();
 
