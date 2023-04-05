@@ -121,10 +121,7 @@ class shell{
 
     public quote createQuote(){
         boolean shell = true;
-        System.out.print("client Name? ");
-        String clientName = scanner.nextLine().strip();
-
-        Klant klant = new Klant(clientName);
+        Klant klant = new Klant();
         System.out.print("customer type ");
         String customerType = scanner.nextLine().strip();
         System.out.print("date? (dd-mm-yy) ");
@@ -162,8 +159,13 @@ class shell{
     }
 }
 class Klant{
+    Scanner scanner = new Scanner(System.in);
     private String naam;
     private Klantentype klantentype;
+
+    public Klant(){
+        setNaam();
+    }
     public Klant(String naam){
         this.naam = naam;
     }
@@ -175,6 +177,10 @@ class Klant{
 
     public String getNaam() {
         return naam;
+    }
+    public void setNaam(){
+        System.out.print("Client name: ");
+        this.naam = scanner.nextLine().strip();
     }
 
     public Klantentype getKlantentype() {
@@ -224,10 +230,11 @@ class Overheid extends Klantentype{
 
 class MaakOp{
     DecimalFormat df = new DecimalFormat("#0.00");
-    public void printOfferte(){
-
+    public void tekstOpmaken(String input, String variable){
+        System.out.print(input);
+        System.out.printf("%12s\n",variable);
     }
-    public void opmaken(String input, double getal){
+    public void PrijzenOpmaken(String input, double getal){
         System.out.printf("%-40s %15s\n",input,"€"+df.format(getal));
 
     }
@@ -278,15 +285,18 @@ class quote{
     }
 
     public void printQuote(){
+        System.out.println("de volgende offerte is een simpele opmaak voor een boot");
+        System.out.println("dit is niet per se een definitieve versie\n");
 
+        opmaak.tekstOpmaken("clientname: ", klant.getNaam());
 
-        System.out.println("Price quotation for the base off the boat\n");
-        opmaak.opmaken("Boat frame price:", this.bootPrijs);
-        opmaak.opmaken("Environmental Discount (" + this.milieuKorting + "%): ", (this.bootPrijs * this.milieuKorting / 100));
-        opmaak.opmaken("VAT (" + Double.toString(this.btwPercentage) + "%):" , (this.bootPrijs * this.btwPercentage / 100));
-        opmaak.opmaken("Transport costs:" , this.transportKosten);
-        opmaak.opmaken("Total Discount (" + Double.toString(this.milieuKorting) + "%):" , (this.bootPrijs * this.milieuKorting / 100));
-        opmaak.opmaken("Total Price: " , this.calculateTotal());
+        System.out.println("\nPrice quotation for the base off the boat");
+        opmaak.PrijzenOpmaken("Boat frame price:", this.bootPrijs);
+        opmaak.PrijzenOpmaken("Environmental Discount (" + this.milieuKorting + "%): ", (this.bootPrijs * this.milieuKorting / 100));
+        opmaak.PrijzenOpmaken("VAT (" + Double.toString(this.btwPercentage) + "%):" , (this.bootPrijs * this.btwPercentage / 100));
+        opmaak.PrijzenOpmaken("Transport costs:" , this.transportKosten);
+        opmaak.PrijzenOpmaken("Total Discount (" + Double.toString(this.milieuKorting) + "%):" , (this.bootPrijs * this.milieuKorting / 100));
+        opmaak.PrijzenOpmaken("\nTotal Price: " , this.calculateTotal());
     }
 
     public Klant getKlant() {
