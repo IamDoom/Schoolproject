@@ -31,6 +31,18 @@ class Option {
     public String getName() {
         return this.name;
     }
+    public double applyDiscount(){
+        double inverted = 100-this.discount;
+        return ((inverted/100)*price);
+    }
+
+    public double getDiscount() {
+        return discount;
+    }
+
+    public boolean isEssential() {
+        return essential;
+    }
 }
 
 
@@ -92,6 +104,30 @@ class OptionList {
         }
         return option;
     }
+
+    public Option addOption(){
+        System.out.print("Welke onderdeel wilt u toevoegen aan de boot? ");
+        String optieNaam = scanner.nextLine();
+        for(Option option : essentialOptions){
+                if (option.getName().equals(optieNaam)){
+                    System.out.println("onderdeel" + option.getName() + "is succesvol toegevoegd");
+                    return option;
+                }
+
+        }
+        for(Option option : extraOptions){
+                if (option.getName().equals(optieNaam)){
+                    System.out.println("onderdeel " + option.getName() + " is  succesvol toegevoegd");
+                    return option;
+                }
+
+        }
+        return null;
+    }
+
+
+
+
 
 
     public void displayOptions() {
@@ -165,7 +201,7 @@ class shell{
         String date = scanner.nextLine();
         System.out.print("order number? ");
         String orderNumber = scanner.nextLine();
-
+        ArrayList<Option> optielijst = new ArrayList<Option>();
         quote quote = new quote(klant, date, orderNumber);
         quote.setQuoteDetails();
         while(shell) {
@@ -176,7 +212,11 @@ class shell{
 
                 }
                 case "add" -> {     // for adding parts to the ship being built
+                    Option optiontest1 = optionList.addOption();
+                    if(optiontest1 != null) {
+                        optielijst.add(optiontest1);
 
+                    }
                 }
                 case "discount" -> {
                     optionList.setOptionDiscount();
@@ -277,6 +317,30 @@ class MaakOp{
     }
     public void PrijzenOpmaken(String input, double getal){
         System.out.printf("%-40s %15s\n",input,"€"+df.format(getal));
+
+    }
+    public void MaakOpOnderdelen(ArrayList<Option> onderdelenlijst){
+        ArrayList<Option> essentieleOnderdelen = new ArrayList<Option>();
+        ArrayList<Option> nietessentieleOnderdelen = new ArrayList<Option>();
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+        for (Option option : onderdelenlijst){
+            if (option.isEssential()){
+                essentieleOnderdelen.add(option);
+            }
+            if (!option.isEssential()){
+                nietessentieleOnderdelen.add(option);
+            }
+        }
+        System.out.println("De essentiele onderdelen zijn: ");
+        System.out.println();
+        for (Option option : essentieleOnderdelen){
+            System.out.println("naam: " + option.getName() + " | oude prijs " + option.getPrice() + " | hoeveelheid korting: " + option.getDiscount() + " | nieuwe prijs: " + decimalFormat.format(option.applyDiscount()));
+        }
+        System.out.println("De extra onderdelen zijn: ");
+        System.out.println();
+        for (Option option : nietessentieleOnderdelen){
+            System.out.println("naam: " + option.getName() + " | oude prijs " + option.getPrice() + " | hoeveelheid korting: " + option.getDiscount() + " | nieuwe prijs: " + decimalFormat.format(option.applyDiscount()));
+        }
 
     }
 }
