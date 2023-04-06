@@ -190,10 +190,10 @@ class shell{
     Scanner scanner = new Scanner(System.in);
     boat boat = new boat();
     OptionList optionList = new OptionList();
+    quote quote = new quote();
+    ArrayList<Option> optielijst = new ArrayList<Option>();
 
-
-    public quote createQuote(){
-        boolean shell = true;
+    public quote createQuote() {
         Klant klant = new Klant();
         System.out.print("customer type ");
         String customerType = scanner.nextLine().strip();
@@ -201,30 +201,41 @@ class shell{
         String date = scanner.nextLine();
         System.out.print("order number? ");
         String orderNumber = scanner.nextLine();
-        ArrayList<Option> optielijst = new ArrayList<Option>();
         quote quote = new quote(klant, date, orderNumber);
         quote.setQuoteDetails();
+        return quote;
+    }
+
+
+    public void run(){
+        boolean shell = true;
         while(shell) {
             String input = scanner.nextLine().strip();
             switch (input) {
+                case "setup" ->{
+                    quote = createQuote();
+                }
+                case "print" ->{
+                    quote.printQuote();
+                }
                 case "create" -> {
                     Option optiontest = this.optionList.createOption();
-
                 }
                 case "add" -> {     // for adding parts to the ship being built
                     Option optiontest1 = optionList.addOption();
                     if(optiontest1 != null) {
                         optielijst.add(optiontest1);
-
                     }
                 }
                 case "discount" -> {
                     optionList.setOptionDiscount();
                 }
-
                 case "list" -> {
                     optionList.displayOptions();
-
+                }
+                case "finalize" ->{
+                    System.out.println("finalizing before shutting down");
+                    shell = false;
                 }
                 case "exit" -> {
                     shell = false;
@@ -236,7 +247,6 @@ class shell{
                 default -> System.out.println("please use a valid input use 'help' for help");
             }
         }
-        return quote;
     }
 }
 class Klant{
@@ -394,7 +404,7 @@ class quote{
         opmaak.PrijzenOpmaken("Boat frame price:", this.bootPrijs);
         opmaak.PrijzenOpmaken("VAT (" + Double.toString(this.btwPercentage) + "%):" , (this.bootPrijs * this.btwPercentage / 100));
         opmaak.PrijzenOpmaken("Transport costs:" , this.transportKosten);
-        opmaak.PrijzenOpmaken("\nTotal Price: " , this.calculateTotal());
+        opmaak.PrijzenOpmaken("\nTotal Price:" , this.calculateTotal());
     }
 
     public void partList(){
@@ -482,31 +492,7 @@ public class Main {
         boolean run = true;
         Scanner scanner = new Scanner(System.in);
         shell shell = new shell();
-        quote quote = new quote();
-        while (run) {
-            String input = scanner.nextLine(); //first version of inputting into console
-            //switch case for a bar-bones version of commands and results, classes and methods have yet to be added.
-            switch (input) {
-                case "exit":
-                    run = false;
-                    break;
-                case "print":
-                    quote.printQuote();
-                    break;
-                case "finalize":
-                    System.out.println("printing and storing quota before shutting down");
-                    run = false;
-                    break;
-                case "create":
-
-                    System.out.println("creating quote");
-                    quote = shell.createQuote();
-                    break;
-                default:
-                    System.out.println("please choose an available option");
-
-            }
+        shell.run();
 
         }
     }
-}
