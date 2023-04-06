@@ -380,6 +380,7 @@ class quote{
         this.btwPercentage = scanner.nextDouble();
         System.out.print("Enter the transportation cost: ");
         this.transportKosten = scanner.nextDouble();
+        printQuote();
     }
     public double calculateTotal(){
         double vatAmount = this.bootPrijs*this.btwPercentage/100;
