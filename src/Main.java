@@ -2,45 +2,69 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.text.DecimalFormat;
 
-class Option{
+class Option {
     private String name;
     private double price;
+    private boolean essential;
     private String description;
+    private double discount;
 
-    Option(String name, double price, String description){
+    Option(String name, double price, boolean essential, String description) {
         this.name = name;
         this.price = price;
+        this.essential = essential;
         this.description = description;
+        this.discount = 0.0;
     }
-    Option(String name, double price){
-        this.name = name;
-        this.price = price;
+    Option(String name, double price, boolean essential) {
+        this(name, price, essential, null);
     }
-
     public void setDescription(String description) {
         this.description = description;
     }
-    public double getPrice(){
-        return this.price;
+    public void setEcoDiscount(double discount) {
+        this.discount = discount;
+    }
+    public double getPrice() {
+        return this.price * (1 - this.discount);
     }
     public String getName() {
         return this.name;
     }
+    public double applyDiscount(){
+        double inverted = 100-this.discount;
+        return ((inverted/100)*price);
+    }
+
+    public double getDiscount() {
+        return discount;
+    }
+
+    public boolean isEssential() {
+        return essential;
+    }
 }
+
+
 class OptionList {
+    Scanner scanner = new Scanner(System.in);
+    DecimalFormat df = new DecimalFormat("#0.00");
+
     private ArrayList<Option> essentialOptions;
     private ArrayList<Option> extraOptions;
 
-    Option Hull = new Option("hull", 2.0);
-    Option HullFrame = new Option("hull frame", 2.0);
-    Option deck = new Option("deck", 2.0);
-    Option cabin = new Option("cabin", 2.0);
-    Option LifeBuoys = new Option("life buoys", 2.0);
-    Option radio = new Option("radio", 2.0);
-    Option radars = new Option("radars", 2.0);
-    Option towerCranes = new Option("tower cranes", 2.0);
-    Option flagDecor = new Option("flags decoration", 2.0);
+    Option Hull = new Option("hull", 2.0,true);
+    Option HullFrame = new Option("hull frame", 2.0,true);
+    Option deck = new Option("deck", 2.0,true);
+    Option cabin = new Option("cabin", 2.0,true);
+    Option LifeBuoys = new Option("life buoys", 2.0,true);
+    Option radio = new Option("radio", 2.0,true);
+    Option radars = new Option("radars", 2.0,true);
+    Option towerCranes = new Option("tower cranes", 2.0,true);
+    Option flagDecor = new Option("flags decoration", 2.0,true);
+
     public OptionList() {
+
         essentialOptions = new ArrayList<Option>();
         essentialOptions.add(Hull);
         essentialOptions.add(HullFrame);
@@ -53,74 +77,347 @@ class OptionList {
         extraOptions.add(radars);
         extraOptions.add(towerCranes);
         extraOptions.add(flagDecor);
+
+        Hull.setEcoDiscount(0.1);
+        HullFrame.setEcoDiscount(0.1);
+        deck.setEcoDiscount(0.1);
+        cabin.setEcoDiscount(0.1);
+        LifeBuoys.setEcoDiscount(0.1);
+        radio.setEcoDiscount(0.1);
+        radars.setEcoDiscount(0.1);
+        towerCranes.setEcoDiscount(0.1);
+        flagDecor.setEcoDiscount(0.1);
     }
+
+    public Option createOption() {
+        System.out.print("Optienaam? ");
+        String name = scanner.nextLine().strip();
+        System.out.print("Prijs? ");
+        double price = scanner.nextDouble();
+        scanner.nextLine(); //to prevent nextdouble from eating;
+        boolean essential = essentialOrNot();
+        Option option = new Option(name, price, essential);
+        if (essential) {
+            essentialOptions.add(option);
+        } else {
+            extraOptions.add(option);
+        }
+        return option;
+    }
+
+    public Option addOption(){
+        System.out.print("Welke onderdeel wilt u toevoegen aan de boot? ");
+        String optieNaam = scanner.nextLine();
+        for(Option option : essentialOptions){
+                if (option.getName().equals(optieNaam)){
+                    System.out.println("onderdeel" + option.getName() + "is succesvol toegevoegd");
+                    return option;
+                }
+
+        }
+        for(Option option : extraOptions){
+                if (option.getName().equals(optieNaam)){
+                    System.out.println("onderdeel " + option.getName() + " is  succesvol toegevoegd");
+                    return option;
+                }
+
+        }
+        return null;
+    }
+
+
+
+
+
 
     public void displayOptions() {
         System.out.println("Essential Options:");
         for (Option option : essentialOptions) {
-            System.out.printf("<%-14S> %10s\n", option.getName(),"€"+option.getPrice());
+            System.out.printf("\t%-17S> %15s\n", option.getName(), "€" + df.format(option.getPrice()));
         }
-
         System.out.println("\nExtra Options:");
         for (Option option : extraOptions) {
-            System.out.printf("<%4S> %-15s\n", option.getName(),"€"+option.getPrice());
+            System.out.printf("\t%-17S> %15s\n", option.getName(), "€" + df.format(option.getPrice()));
         }
     }
+
+    private boolean essentialOrNot() {
+
+        while (true) {
+            System.out.print("Is deze optie essentieel? ");
+            String input = scanner.nextLine().strip().toLowerCase();
+            switch (input) {
+                case "yes" -> {
+                    return true;
+                }
+                case "no" -> {
+                    return false;
+                }
+                default -> System.out.println("illegal input please enter 'yes' or 'no'");
+            }
+        }
+    }
+    public void setOptionDiscount() {
+        System.out.print("To which option do you want to make a change? ");
+        String name = scanner.nextLine().strip();
+        for (Option option : essentialOptions) {
+            if (option.getName().equalsIgnoreCase(name)) {
+                System.out.print("New eco-discount? ");
+                double discount = scanner.nextDouble();
+                scanner.nextLine();
+                option.setEcoDiscount(discount);
+                System.out.println("Eco-discount changed!");
+                return;
+            }
+        }
+        for (Option option : extraOptions) {
+            if (option.getName().equalsIgnoreCase(name)) {
+                System.out.print("New eco-discount? ");
+                double ecoDiscount = scanner.nextDouble();
+                scanner.nextLine();
+                option.setEcoDiscount(ecoDiscount);
+                System.out.println("Eco-discount changed!");
+                return;
+            }
+        }
+        System.out.println("Option unavailable!");
+    }
+
+
 }
 
 class shell{
     Scanner scanner = new Scanner(System.in);
+    boat boat = new boat();
+    OptionList optionList = new OptionList();
+
+
     public quote createQuote(){
         boolean shell = true;
-        System.out.println("client Name?");
-        String clientName = scanner.nextLine();
-        System.out.println("date? (dd-mm-yy)");
+        Klant klant = new Klant();
+        System.out.print("customer type ");
+        String customerType = scanner.nextLine().strip();
+        System.out.print("date? (dd-mm-yy) ");
         String date = scanner.nextLine();
-        System.out.println("ordernummer?");
+        System.out.print("order number? ");
         String orderNumber = scanner.nextLine();
-        quote quote = new quote(clientName, 0.0, date, orderNumber);
+        ArrayList<Option> optielijst = new ArrayList<Option>();
+        quote quote = new quote(klant, date, orderNumber);
+        quote.setQuoteDetails();
+        while(shell) {
+            String input = scanner.nextLine().strip();
+            switch (input) {
+                case "create" -> {
+                    Option optiontest = this.optionList.createOption();
 
+                }
+                case "add" -> {     // for adding parts to the ship being built
+                    Option optiontest1 = optionList.addOption();
+                    if(optiontest1 != null) {
+                        optielijst.add(optiontest1);
 
-    //romp, rompframe, dek, kajuit
-    //Reddingsboeien, radio's, radars, torenkranen, vlaggen en rompverfraaiing
+                    }
+                }
+                case "discount" -> {
+                    optionList.setOptionDiscount();
+                }
 
+                case "list" -> {
+                    optionList.displayOptions();
 
+                }
+                case "exit" -> {
+                    shell = false;
+                }
+                case "help" -> {
+                    System.out.println("hier komt een lijst met termen en wellicht een beschrijving");
+            }
+
+                default -> System.out.println("please use a valid input use 'help' for help");
+            }
+        }
         return quote;
     }
 }
+class Klant{
+    Scanner scanner = new Scanner(System.in);
+    private String naam;
+    private Klantentype klantentype;
+
+    public Klant(){
+        setNaam();
+    }
+    public Klant(String naam){
+        this.naam = naam;
+    }
+    public Klant(String name, Klantentype klantentype){
+        this(name);
+        this.klantentype = klantentype;
+    }
+
+
+    public String getNaam() {
+        return naam;
+    }
+    public void setNaam(){
+        System.out.print("Client name: ");
+        this.naam = scanner.nextLine().strip();
+    }
+
+    public Klantentype getKlantentype() {
+        return klantentype;
+    }
+}
+abstract class Klantentype{
+    private String naam;
+    private double hoeveelheidkorting;
+
+
+    public Klantentype(String naam) {
+        this.naam = naam;
+    }
+
+    public String getNaam(){
+        return naam;
+    }
+    public double getKorting(){
+        return hoeveelheidkorting;
+    }
+
+}
+class Particulier extends Klantentype{
+
+
+    public Particulier(String naam) {
+        super(naam);
+    }
+}
+
+class Bedrijf extends Klantentype{
+
+
+    public Bedrijf(String naam) {
+        super(naam);
+    }
+}
+
+class Overheid extends Klantentype{
+
+
+    public Overheid(String naam) {
+        super(naam);
+    }
+}
+
+class MaakOp{
+    DecimalFormat df = new DecimalFormat("#0.00");
+    public void tekstOpmaken(String input, String variable){
+        System.out.print(input);
+        System.out.printf("%12s\n",variable);
+    }
+    public void PrijzenOpmaken(String input, double getal){
+        System.out.printf("%-40s %15s\n",input,"€"+df.format(getal));
+
+    }
+    public void MaakOpOnderdelen(ArrayList<Option> onderdelenlijst){
+        ArrayList<Option> essentieleOnderdelen = new ArrayList<Option>();
+        ArrayList<Option> nietessentieleOnderdelen = new ArrayList<Option>();
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+        for (Option option : onderdelenlijst){
+            if (option.isEssential()){
+                essentieleOnderdelen.add(option);
+            }
+            if (!option.isEssential()){
+                nietessentieleOnderdelen.add(option);
+            }
+        }
+        System.out.println("De essentiele onderdelen zijn: ");
+        System.out.println();
+        for (Option option : essentieleOnderdelen){
+            System.out.println("naam: " + option.getName() + " | oude prijs " + option.getPrice() + " | hoeveelheid korting: " + option.getDiscount() + " | nieuwe prijs: " + decimalFormat.format(option.applyDiscount()));
+        }
+        System.out.println("De extra onderdelen zijn: ");
+        System.out.println();
+        for (Option option : nietessentieleOnderdelen){
+            System.out.println("naam: " + option.getName() + " | oude prijs " + option.getPrice() + " | hoeveelheid korting: " + option.getDiscount() + " | nieuwe prijs: " + decimalFormat.format(option.applyDiscount()));
+        }
+
+    }
+}
+
+
 
 class quote{
-    private String clientName;
-    private double price;
+    MaakOp opmaak = new MaakOp();
+    Scanner scanner = new Scanner(System.in);
+
+    private Klant klant;
     private String date;
     private String orderNumber;
     private boat boat;
+    private double bootPrijs;
+    private double btwPercentage;
+    private double transportKosten;
+    private double totaalprijs;
+    private double milieuKorting;
 
-    quote(String clientName, double price, String date, String orderNumber){
-        clientName = this.clientName;
-        price = this.price;
-        date = this.date;
-        orderNumber = this.orderNumber;
+    quote(){}
+
+
+    quote(Klant klant, String date, String orderNumber){
+        this.klant = klant;
+        this.date = date;
+        this.orderNumber = orderNumber;
+    }
+
+
+    public void setQuoteDetails(){
+        System.out.print("Enter the base price of the boat: ");
+        this.bootPrijs = scanner.nextDouble();
+        System.out.print("Enter the environmental discount in %: ");
+        this.milieuKorting = scanner.nextDouble();
+        System.out.print("Enter the VAT-percentage: ");
+        this.btwPercentage = scanner.nextDouble();
+        System.out.print("Enter the transportation cost: ");
+        this.transportKosten = scanner.nextDouble();
+    }
+    public double calculateTotal(){
+        double vatAmount = this.bootPrijs*this.btwPercentage/100;
+        double enviromentalDiscount = this.bootPrijs*this.milieuKorting/100;
+        this.totaalprijs = bootPrijs+enviromentalDiscount+vatAmount+this.transportKosten;
+        return this.totaalprijs;
+    }
+
+    public void printQuote(){
+        System.out.println("de volgende offerte is een simpele opmaak voor een boot");
+        System.out.println("dit is niet per se een definitieve versie\n");
+
+        opmaak.tekstOpmaken("clientname: ", klant.getNaam());
+
+        System.out.println("\nPrice quotation for the base off the boat");
+        opmaak.PrijzenOpmaken("Boat frame price:", this.bootPrijs);
+        opmaak.PrijzenOpmaken("Environmental Discount (" + this.milieuKorting + "%): ", (this.bootPrijs * this.milieuKorting / 100));
+        opmaak.PrijzenOpmaken("VAT (" + Double.toString(this.btwPercentage) + "%):" , (this.bootPrijs * this.btwPercentage / 100));
+        opmaak.PrijzenOpmaken("Transport costs:" , this.transportKosten);
+        opmaak.PrijzenOpmaken("Total Discount (" + Double.toString(this.milieuKorting) + "%):" , (this.bootPrijs * this.milieuKorting / 100));
+        opmaak.PrijzenOpmaken("\nTotal Price: " , this.calculateTotal());
+    }
+
+    public Klant getKlant() {
+        return klant;
     }
 
 
 
-    public String getClientName() {
-        return clientName;
+    public void setKlant(Klant klant) {
+        this.klant = klant;
     }
-
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
-    }
-
     public String getDate() {
         return date;
     }
-
     public void setDate(String date) {
         this.date = date;
     }
-
     public String getOrderNumber() {
         return orderNumber;
     }
@@ -128,20 +425,25 @@ class quote{
     public void setOrderNumber(String orderNumber) {
         this.orderNumber = orderNumber;
     }
-
     public boat getBoat() {
         return boat;
     }
-
     public void setBoat(boat boat) {
         this.boat = boat;
     }
+
+}
+
+class boatList{
+
 }
 
 class boat{
     private String type;
     private String name;
     private String serialNumber;
+    private String customerType;
+    private ArrayList<Option> parts;
 
     public String getType() {
         return type;
@@ -166,98 +468,41 @@ class boat{
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
+    public void setCustomerType(String customerType) {
+        this.customerType = customerType;
+    }
+
 }
-/*needs to be further modified but works now as well.
-~pratik
-*/
-class Offerte {
-    private double bootPrijs;
-    private double btwPercentage;
-    private double transportKosten;
-    private double totaalPrijs;
-    private double milieuKorting;
-
-    public Offerte(double bootPrijs, double milieuKorting, double btwPercentage, double transportKosten) {
-        this.bootPrijs = bootPrijs;
-        this.btwPercentage = btwPercentage;
-        this.transportKosten = transportKosten;
-        this.milieuKorting = milieuKorting;
-        this.totaalPrijs = berekenTotaalPrijs();
-    }
-
-    public double berekenTotaalPrijs() {
-        double btwBedrag = bootPrijs * btwPercentage / 100;
-        double MilieuKorting = bootPrijs * milieuKorting / 100;
-        double totaalPrijs = bootPrijs + MilieuKorting + btwBedrag + transportKosten;
-        return totaalPrijs;
-    }
-
-    public void printOfferte() {
-        DecimalFormat df = new DecimalFormat("#.00");
-        // To separate the quotations from the inserted prices
-        System.out.println();
-        System.out.println();
-
-        System.out.println("Quotation for the boat:");
-        System.out.println("Boat frame price: €" + df.format(bootPrijs));
-        System.out.println("Environmental Discount (" + milieuKorting + "%):€ "+ df.format(bootPrijs * milieuKorting / 100));
-        System.out.println("VAT (" + btwPercentage + "%): €" + df.format(bootPrijs * btwPercentage / 100));
-        System.out.println("Transport costs: €" + df.format(transportKosten));
-        System.out.println("Total Discount (" + milieuKorting + "%):€ " + df.format(bootPrijs * milieuKorting / 100));
-        System.out.println("Total Price: €" + df.format(totaalPrijs));
-    }
-}
-
 
 /* this is a program that produces quotations complying to the conditions of the client "bedrijf 42"
 it should run in a while loop, and we intend to work with the basis of a template */
 
 
 public class Main {
+    private  OptionList optionlist = new OptionList();
     public static void main(String[] args) {
-        shell shell = new shell();
         boolean run = true;
         Scanner scanner = new Scanner(System.in);
-/*
-~Pratik needs to be further modified but it works now as well.
-*/
-
-        OptionList optionlist = new OptionList();
-        optionlist.displayOptions();
-
-        System.out.print("Enter the base price of the boat: ");
-        double bootPrijs = scanner.nextDouble();
-
-        System.out.println("Enter the environmental discount in %: ");
-        double milieuKorting = scanner.nextDouble();
-
-        System.out.print("Enter the VAT-percentage: ");
-        double btwPercentage = scanner.nextDouble();
-
-        System.out.print("Enter the transportation cost: ");
-        double transportKosten = scanner.nextDouble();
-
-        Offerte offerte = new Offerte(bootPrijs, milieuKorting, btwPercentage, transportKosten);
-        offerte.printOfferte();
-
+        shell shell = new shell();
+        quote quote = new quote();
         while (run) {
             String input = scanner.nextLine(); //first version of inputting into console
-
             //switch case for a bar-bones version of commands and results, classes and methods have yet to be added.
             switch (input) {
                 case "exit":
                     run = false;
                     break;
                 case "print":
-                    System.out.println("printing current quota");
+                    quote.printQuote();
                     break;
                 case "finalize":
                     System.out.println("printing and storing quota before shutting down");
                     run = false;
                     break;
                 case "create":
+
                     System.out.println("creating quote");
-                    quote quote = shell.createQuote();
+                    quote = shell.createQuote();
                     break;
                 default:
                     System.out.println("please choose an available option");
