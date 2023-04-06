@@ -94,7 +94,7 @@ class OptionList {
         String name = scanner.nextLine().strip();
         System.out.print("Prijs? ");
         double price = scanner.nextDouble();
-        scanner.nextLine();
+        scanner.nextLine(); //to prevent nextdouble from eating;
         boolean essential = essentialOrNot();
         Option option = new Option(name, price, essential);
         if (essential) {
@@ -157,15 +157,15 @@ class OptionList {
             }
         }
     }
-    public void setOptionDiscount() { // here is the shipbuilder able to change the eco discount
+    public void setOptionDiscount() {
         System.out.print("To which option do you want to make a change? ");
         String name = scanner.nextLine().strip();
         for (Option option : essentialOptions) {
             if (option.getName().equalsIgnoreCase(name)) {
                 System.out.print("New eco-discount? ");
-                double ecoDiscount = scanner.nextDouble();
+                double discount = scanner.nextDouble();
                 scanner.nextLine();
-                option.setEcoDiscount(ecoDiscount);
+                option.setEcoDiscount(discount);
                 System.out.println("Eco-discount changed!");
                 return;
             }
@@ -182,11 +182,16 @@ class OptionList {
         }
         System.out.println("Option unavailable!");
     }
+
+
 }
 
 class shell{
     Scanner scanner = new Scanner(System.in);
+    boat boat = new boat();
     OptionList optionList = new OptionList();
+
+
     public quote createQuote(){
         boolean shell = true;
         Klant klant = new Klant();
@@ -239,13 +244,21 @@ class Klant{
     private String naam;
     private Klantentype klantentype;
 
-    public Klant(){setNaam();}
-    public Klant(String naam){this.naam = naam;}
+    public Klant(){
+        setNaam();
+    }
+    public Klant(String naam){
+        this.naam = naam;
+    }
     public Klant(String name, Klantentype klantentype){
         this(name);
         this.klantentype = klantentype;
     }
-    public String getNaam() {return naam;}
+
+
+    public String getNaam() {
+        return naam;
+    }
     public void setNaam(){
         System.out.print("Client name: ");
         this.naam = scanner.nextLine().strip();
@@ -258,20 +271,42 @@ class Klant{
 abstract class Klantentype{
     private String naam;
     private double hoeveelheidkorting;
-    public Klantentype(String naam) {this.naam = naam;}
-    public String getNaam(){return naam;}
-    public double getKorting(){return hoeveelheidkorting;}
+
+
+    public Klantentype(String naam) {
+        this.naam = naam;
+    }
+
+    public String getNaam(){
+        return naam;
+    }
+    public double getKorting(){
+        return hoeveelheidkorting;
+    }
+
 }
 class Particulier extends Klantentype{
-    public Particulier(String naam) {super(naam);}
+
+
+    public Particulier(String naam) {
+        super(naam);
+    }
 }
 
 class Bedrijf extends Klantentype{
-    public Bedrijf(String naam) {super(naam);}
+
+
+    public Bedrijf(String naam) {
+        super(naam);
+    }
 }
 
 class Overheid extends Klantentype{
-    public Overheid(String naam) {super(naam);}
+
+
+    public Overheid(String naam) {
+        super(naam);
+    }
 }
 
 class MaakOp{
@@ -312,7 +347,7 @@ class MaakOp{
 
 
 
-class quote {
+class quote{
     MaakOp opmaak = new MaakOp();
     Scanner scanner = new Scanner(System.in);
 
@@ -326,18 +361,17 @@ class quote {
     private double totaalprijs;
     private double milieuKorting;
 
-    quote() {
-    }
+    quote(){}
 
 
-    quote(Klant klant, String date, String orderNumber) {
+    quote(Klant klant, String date, String orderNumber){
         this.klant = klant;
         this.date = date;
         this.orderNumber = orderNumber;
     }
 
 
-    public void setQuoteDetails() {
+    public void setQuoteDetails(){
         System.out.print("Enter the base price of the boat: ");
         this.bootPrijs = scanner.nextDouble();
         System.out.print("Enter the environmental discount in %: ");
@@ -347,15 +381,14 @@ class quote {
         System.out.print("Enter the transportation cost: ");
         this.transportKosten = scanner.nextDouble();
     }
-
-    public double calculateTotal() {
-        double vatAmount = this.bootPrijs * this.btwPercentage / 100;
-        double enviromentalDiscount = this.bootPrijs * this.milieuKorting / 100;
-        this.totaalprijs = bootPrijs + enviromentalDiscount + vatAmount + this.transportKosten;
+    public double calculateTotal(){
+        double vatAmount = this.bootPrijs*this.btwPercentage/100;
+        double enviromentalDiscount = this.bootPrijs*this.milieuKorting/100;
+        this.totaalprijs = bootPrijs+enviromentalDiscount+vatAmount+this.transportKosten;
         return this.totaalprijs;
     }
 
-    public void printQuote() {
+    public void printQuote(){
         System.out.println("de volgende offerte is een simpele opmaak voor een boot");
         System.out.println("dit is niet per se een definitieve versie\n");
 
@@ -364,28 +397,27 @@ class quote {
         System.out.println("\nPrice quotation for the base off the boat");
         opmaak.PrijzenOpmaken("Boat frame price:", this.bootPrijs);
         opmaak.PrijzenOpmaken("Environmental Discount (" + this.milieuKorting + "%): ", (this.bootPrijs * this.milieuKorting / 100));
-        opmaak.PrijzenOpmaken("VAT (" + Double.toString(this.btwPercentage) + "%):", (this.bootPrijs * this.btwPercentage / 100));
-        opmaak.PrijzenOpmaken("Transport costs:", this.transportKosten);
-        opmaak.PrijzenOpmaken("Total Discount (" + Double.toString(this.milieuKorting) + "%):", (this.bootPrijs * this.milieuKorting / 100));
-        opmaak.PrijzenOpmaken("\nTotal Price: ", this.calculateTotal());
+        opmaak.PrijzenOpmaken("VAT (" + Double.toString(this.btwPercentage) + "%):" , (this.bootPrijs * this.btwPercentage / 100));
+        opmaak.PrijzenOpmaken("Transport costs:" , this.transportKosten);
+        opmaak.PrijzenOpmaken("Total Discount (" + Double.toString(this.milieuKorting) + "%):" , (this.bootPrijs * this.milieuKorting / 100));
+        opmaak.PrijzenOpmaken("\nTotal Price: " , this.calculateTotal());
     }
 
     public Klant getKlant() {
         return klant;
     }
 
+
+
     public void setKlant(Klant klant) {
         this.klant = klant;
     }
-
     public String getDate() {
         return date;
     }
-
     public void setDate(String date) {
         this.date = date;
     }
-
     public String getOrderNumber() {
         return orderNumber;
     }
@@ -393,91 +425,90 @@ class quote {
     public void setOrderNumber(String orderNumber) {
         this.orderNumber = orderNumber;
     }
-
     public boat getBoat() {
         return boat;
     }
-
     public void setBoat(boat boat) {
         this.boat = boat;
     }
 
-    class boatList {
+}
+
+class boatList{
+
+}
+
+class boat{
+    private String type;
+    private String name;
+    private String serialNumber;
+    private String customerType;
+    private ArrayList<Option> parts;
+
+    public String getType() {
+        return type;
     }
 
-    class boat {
-        private String type;
-        private String name;
-        private String serialNumber;
-        private String customerType;
-        private ArrayList<Option> parts;
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getSerialNumber() {
-            return serialNumber;
-        }
-
-        public void setSerialNumber(String serialNumber) {
-            this.serialNumber = serialNumber;
-        }
-
-        public void setCustomerType(String customerType) {
-            this.customerType = customerType;
-        }
-
+    public void setType(String type) {
+        this.type = type;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
+    }
+    public void setCustomerType(String customerType) {
+        this.customerType = customerType;
+    }
+
+}
 
 /* this is a program that produces quotations complying to the conditions of the client "bedrijf 42"
 it should run in a while loop, and we intend to work with the basis of a template */
 
 
-    public class Main {
-        private OptionList optionlist = new OptionList();
+public class Main {
+    private  OptionList optionlist = new OptionList();
+    public static void main(String[] args) {
+        boolean run = true;
+        Scanner scanner = new Scanner(System.in);
+        shell shell = new shell();
+        quote quote = new quote();
+        while (run) {
+            String input = scanner.nextLine(); //first version of inputting into console
+            //switch case for a bar-bones version of commands and results, classes and methods have yet to be added.
+            switch (input) {
+                case "exit":
+                    run = false;
+                    break;
+                case "print":
+                    quote.printQuote();
+                    break;
+                case "finalize":
+                    System.out.println("printing and storing quota before shutting down");
+                    run = false;
+                    break;
+                case "create":
 
-        public static void main(String[] args) {
-            boolean run = true;
-            Scanner scanner = new Scanner(System.in);
-            shell shell = new shell();
-            quote quote = new quote();
-            while (run) {
-                String input = scanner.nextLine(); //first version of inputting into console
-                //switch case for a bar-bones version of commands and results, classes and methods have yet to be added.
-                switch (input) {
-                    case "exit":
-                        run = false;
-                        break;
-                    case "print":
-                        quote.printQuote();
-                        break;
-                    case "finalize":
-                        System.out.println("printing and storing quota before shutting down");
-                        run = false;
-                        break;
-                    case "create":
-                        System.out.println("creating quote");
-                        quote = shell.createQuote();
-                        break;
-                    default:
-                        System.out.println("please choose an available option");
-
-                }
+                    System.out.println("creating quote");
+                    quote = shell.createQuote();
+                    break;
+                default:
+                    System.out.println("please choose an available option");
 
             }
+
         }
     }
 }
