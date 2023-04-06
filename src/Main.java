@@ -26,7 +26,7 @@ class Option {
         this.discount = discount;
     }
     public double getPrice() {
-        return this.price * (1 - this.discount);
+        return this.price ;
     }
     public String getName() {
         return this.name;
@@ -124,6 +124,12 @@ class OptionList {
         }
         return null;
     }
+
+
+
+
+
+
     public void displayOptions() {
         System.out.println("Essential Options:");
         for (Option option : essentialOptions) {
@@ -316,7 +322,6 @@ class MaakOp{
     public void MaakOpOnderdelen(ArrayList<Option> onderdelenlijst){
         ArrayList<Option> essentieleOnderdelen = new ArrayList<Option>();
         ArrayList<Option> nietessentieleOnderdelen = new ArrayList<Option>();
-        DecimalFormat decimalFormat = new DecimalFormat("#.##");
         for (Option option : onderdelenlijst){
             if (option.isEssential()){
                 essentieleOnderdelen.add(option);
@@ -328,12 +333,12 @@ class MaakOp{
         System.out.println("De essentiele onderdelen zijn: ");
         System.out.println();
         for (Option option : essentieleOnderdelen){
-            System.out.println("naam: " + option.getName() + " | oude prijs " + option.getPrice() + " | hoeveelheid korting: " + option.getDiscount() + " | nieuwe prijs: " + decimalFormat.format(option.applyDiscount()));
+            System.out.println("naam: " + option.getName() + " | oude prijs " + option.getPrice() + " | hoeveelheid korting: " + option.getDiscount() + " | nieuwe prijs: " + df.format(option.applyDiscount()));
         }
         System.out.println("De extra onderdelen zijn: ");
         System.out.println();
         for (Option option : nietessentieleOnderdelen){
-            System.out.println("naam: " + option.getName() + " | oude prijs " + option.getPrice() + " | hoeveelheid korting: " + option.getDiscount() + " | nieuwe prijs: " + decimalFormat.format(option.applyDiscount()));
+            System.out.println("naam: " + option.getName() + " | oude prijs " + option.getPrice() + " | hoeveelheid korting: " + option.getDiscount() + " | nieuwe prijs: " + df.format(option.applyDiscount()));
         }
 
     }
@@ -353,7 +358,7 @@ class quote{
     private double btwPercentage;
     private double transportKosten;
     private double totaalprijs;
-    private double milieuKorting;
+    private ArrayList<Option> selectedParts = new ArrayList<>();
 
     quote(){}
 
@@ -368,8 +373,6 @@ class quote{
     public void setQuoteDetails(){
         System.out.print("Enter the base price of the boat: ");
         this.bootPrijs = scanner.nextDouble();
-        System.out.print("Enter the environmental discount in %: ");
-        this.milieuKorting = scanner.nextDouble();
         System.out.print("Enter the VAT-percentage: ");
         this.btwPercentage = scanner.nextDouble();
         System.out.print("Enter the transportation cost: ");
@@ -377,8 +380,7 @@ class quote{
     }
     public double calculateTotal(){
         double vatAmount = this.bootPrijs*this.btwPercentage/100;
-        double enviromentalDiscount = this.bootPrijs*this.milieuKorting/100;
-        this.totaalprijs = bootPrijs+enviromentalDiscount+vatAmount+this.transportKosten;
+        this.totaalprijs = bootPrijs+vatAmount+this.transportKosten;
         return this.totaalprijs;
     }
 
@@ -390,11 +392,13 @@ class quote{
 
         System.out.println("\nPrice quotation for the base off the boat");
         opmaak.PrijzenOpmaken("Boat frame price:", this.bootPrijs);
-        opmaak.PrijzenOpmaken("Environmental Discount (" + this.milieuKorting + "%): ", (this.bootPrijs * this.milieuKorting / 100));
         opmaak.PrijzenOpmaken("VAT (" + Double.toString(this.btwPercentage) + "%):" , (this.bootPrijs * this.btwPercentage / 100));
         opmaak.PrijzenOpmaken("Transport costs:" , this.transportKosten);
-        opmaak.PrijzenOpmaken("Total Discount (" + Double.toString(this.milieuKorting) + "%):" , (this.bootPrijs * this.milieuKorting / 100));
         opmaak.PrijzenOpmaken("\nTotal Price: " , this.calculateTotal());
+    }
+
+    public void partList(){
+
     }
 
     public Klant getKlant() {
