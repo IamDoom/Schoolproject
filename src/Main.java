@@ -320,6 +320,9 @@ class MaakOp{
             case "list" -> {
                 System.out.printf("\t%-17S> %33s\n", option.getName(), ">€" + df.format(option.getPrice()));
             }
+            case"individual" ->{
+                System.out.printf("%-20S %5s %15s\n",option.getName(),"(essentieel)","prijs: "+df.format(option.getPrice()));
+            }
         }
     }
 }
@@ -378,7 +381,7 @@ class quote{
             opmaak.MaakOpOnderdeel(option,"list");
         }
         opmaak.PrijzenOpmaken("Transport costs:" , this.transportKosten);
-        opmaak.PrijzenOpmaken("VAT (" + Double.toString(this.btwPercentage) + "%):" , (this.bootPrijs * this.btwPercentage / 100));
+        opmaak.PrijzenOpmaken("VAT (" + this.btwPercentage + "%):" , (this.bootPrijs * this.btwPercentage / 100));
         opmaak.PrijzenOpmaken("Total Price:" , this.calculateTotal());
     }
 
