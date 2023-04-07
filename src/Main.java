@@ -95,7 +95,7 @@ class OptionList {
         return Options;
     }
 
-    public Option createOption() {
+    public void createOption() {
         System.out.print("Optienaam? ");
         String name = scanner.nextLine().strip();
         System.out.print("Prijs? ");
@@ -103,18 +103,8 @@ class OptionList {
         scanner.nextLine(); //to prevent nextdouble from eating;
         boolean essential = essentialOrNot();
         Option option = new Option(name, price, essential);
-        if (essential) {
-            Options.add(option);
-        } else {
-            Options.add(option);
-        }
-        return option;
+        Options.add(option);
     }
-
-
-
-
-
 
 
 
@@ -139,13 +129,13 @@ class OptionList {
             System.out.print("Is deze optie essentieel? ");
             String input = scanner.nextLine().strip().toLowerCase();
             switch (input) {
-                case "yes" -> {
+                case "ja" -> {
                     return true;
                 }
-                case "no" -> {
+                case "nee" -> {
                     return false;
                 }
-                default -> System.out.println("illegal input please enter 'yes' or 'no'");
+                default -> System.out.println("foutief, voer 'ja' of 'nee'");
             }
         }
     }
@@ -208,7 +198,7 @@ class shell{
                     quote.printQuote();
                 }
                 case "create" -> {
-                    this.optionList.createOption();
+                    optionList.createOption();
                 }
                 case "add" -> {     // for adding parts to the ship being built
                     quote.addOption(optionList.getOptions());
@@ -374,6 +364,7 @@ class quote{
         System.out.println("dit is niet per se een definitieve versie\n");
 
         opmaak.tekstOpmaken("clientname: ", klant.getNaam());
+        opmaak.tekstOpmaken("ordernummer: ",getOrderNumber());
 
         System.out.println("\nPrice quotation for the base off the boat");
         opmaak.PrijzenOpmaken("Boat frame price:", this.bootPrijs);
