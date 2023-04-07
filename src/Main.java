@@ -122,12 +122,12 @@ class OptionList {
         System.out.println("essential options:");
         for(Option option: Options)
             if(option.getEssential()){
-                opmaak.MaakOpOnderdeel(option);
+                opmaak.MaakOpOnderdeel(option,"list");
             }
         System.out.println("extra options:");
         for(Option option: Options){
             if(!option.getEssential()){
-                opmaak.MaakOpOnderdeel(option);
+                opmaak.MaakOpOnderdeel(option,"list");
             }
         }
 
@@ -180,21 +180,17 @@ class OptionList {
 
 class shell{
     Scanner scanner = new Scanner(System.in);
-    boat boat = new boat();
     OptionList optionList = new OptionList();
     quote quote = new quote();
-    MaakOp opmaak = new MaakOp();
-    ArrayList<Option> optielijst = new ArrayList<Option>();
 
     public quote createQuote() {
         Klant klant = new Klant();
-        System.out.print("customer type ");
-        String customerType = scanner.nextLine().strip();
         System.out.print("date? (dd-mm-yy) ");
         String date = scanner.nextLine();
         System.out.print("order number? ");
         String orderNumber = scanner.nextLine();
-        quote quote = new quote(klant, date, orderNumber);
+        ArrayList<Option> preselectedparts = quote.partList();
+        quote quote = new quote(klant, date, orderNumber,preselectedparts);
         quote.setQuoteDetails();
         return quote;
     }
@@ -212,7 +208,7 @@ class shell{
                     quote.printQuote();
                 }
                 case "create" -> {
-                    Option optiontest = this.optionList.createOption();
+                    this.optionList.createOption();
                 }
                 case "add" -> {     // for adding parts to the ship being built
                     quote.addOption(optionList.getOptions());
@@ -319,9 +315,13 @@ class MaakOp{
         System.out.printf("%-40s %15s\n",input,"€"+df.format(getal));
 
     }
-    public void MaakOpOnderdeel(Option option){
-                System.out.printf("\t%-17S> %15s\n", option.getName(), "€" + df.format(option.getPrice()));
+    public void MaakOpOnderdeel(Option option, String type){
+        switch(type) {
+            case "list" -> {
+                System.out.printf("\t%-17S> %33s\n", option.getName(), ">€" + df.format(option.getPrice()));
             }
+        }
+    }
 }
 
 
@@ -343,10 +343,11 @@ class quote{
     quote(){}
 
 
-    quote(Klant klant, String date, String orderNumber){
+    quote(Klant klant, String date, String orderNumber, ArrayList<Option> preSelectedParts){
         this.klant = klant;
         this.date = date;
         this.orderNumber = orderNumber;
+        this.selectedParts = preSelectedParts;
     }
 
 
@@ -357,6 +358,7 @@ class quote{
         this.btwPercentage = scanner.nextDouble();
         System.out.print("Enter the transportation cost: ");
         this.transportKosten = scanner.nextDouble();
+        scanner.nextLine();
     }
     public double calculateTotal(){
         double vatAmount = this.bootPrijs*this.btwPercentage/100;
@@ -372,16 +374,16 @@ class quote{
 
         System.out.println("\nPrice quotation for the base off the boat");
         opmaak.PrijzenOpmaken("Boat frame price:", this.bootPrijs);
-        opmaak.PrijzenOpmaken("VAT (" + Double.toString(this.btwPercentage) + "%):" , (this.bootPrijs * this.btwPercentage / 100));
-        opmaak.PrijzenOpmaken("Transport costs:" , this.transportKosten);
         for(Option option: selectedParts){
-            opmaak.MaakOpOnderdeel(option);
+            opmaak.MaakOpOnderdeel(option,"list");
         }
+        opmaak.PrijzenOpmaken("Transport costs:" , this.transportKosten);
+        opmaak.PrijzenOpmaken("VAT (" + Double.toString(this.btwPercentage) + "%):" , (this.bootPrijs * this.btwPercentage / 100));
         opmaak.PrijzenOpmaken("Total Price:" , this.calculateTotal());
     }
 
-    public void partList(){
-
+    public ArrayList<Option> partList(){
+        return selectedParts;
     }
 
     public void addOption(ArrayList<Option> options){
@@ -472,10 +474,7 @@ it should run in a while loop, and we intend to work with the basis of a templat
 
 
 public class Main {
-    private  OptionList optionlist = new OptionList();
     public static void main(String[] args) {
-        boolean run = true;
-        Scanner scanner = new Scanner(System.in);
         shell shell = new shell();
         shell.run();
 
