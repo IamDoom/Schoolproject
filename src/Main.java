@@ -26,7 +26,7 @@ class Option {
         this.discount = discount;
     }
     public double getPrice() {
-        return this.price * (1 - this.discount);
+        return this.price;
     }
     public String getName() {
         return this.name;
@@ -322,7 +322,6 @@ class MaakOp{
     public void MaakOpOnderdelen(ArrayList<Option> onderdelenlijst){
         ArrayList<Option> essentieleOnderdelen = new ArrayList<Option>();
         ArrayList<Option> nietessentieleOnderdelen = new ArrayList<Option>();
-        DecimalFormat decimalFormat = new DecimalFormat("#.##");
         for (Option option : onderdelenlijst){
             if (option.isEssential()){
                 essentieleOnderdelen.add(option);
@@ -334,12 +333,12 @@ class MaakOp{
         System.out.println("De essentiele onderdelen zijn: ");
         System.out.println();
         for (Option option : essentieleOnderdelen){
-            System.out.println("naam: " + option.getName() + " | oude prijs " + option.getPrice() + " | hoeveelheid korting: " + option.getDiscount() + " | nieuwe prijs: " + decimalFormat.format(option.applyDiscount()));
+            System.out.println("naam: " + option.getName() + " | oude prijs " + option.getPrice() + " | hoeveelheid korting: " + option.getDiscount() + " | nieuwe prijs: " + df.format(option.applyDiscount()));
         }
         System.out.println("De extra onderdelen zijn: ");
         System.out.println();
         for (Option option : nietessentieleOnderdelen){
-            System.out.println("naam: " + option.getName() + " | oude prijs " + option.getPrice() + " | hoeveelheid korting: " + option.getDiscount() + " | nieuwe prijs: " + decimalFormat.format(option.applyDiscount()));
+            System.out.println("naam: " + option.getName() + " | oude prijs " + option.getPrice() + " | hoeveelheid korting: " + option.getDiscount() + " | nieuwe prijs: " + df.format(option.applyDiscount()));
         }
 
     }
