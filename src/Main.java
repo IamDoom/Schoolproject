@@ -1,3 +1,4 @@
+import java.util.Date;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.text.DecimalFormat;
@@ -174,9 +175,31 @@ class shell{
     quote quote = new quote();
 
     public quote createQuote() {
+        System.out.println("Wat is de naam van uw klant?");
+        String naamKlant = scanner.nextLine();
+        System.out.println("voor welk klantentype wilt u een offerte maken?");
+        System.out.println("1. Bedrijf, 2. Overheid, 3. Particulier, 4. Nieuw klantentype");
+        String klantentypeNummber = scanner.nextLine();
         Klant klant = new Klant();
-        System.out.print("date? (dd-mm-yy) ");
-        String date = scanner.nextLine();
+        if(klantentypeNummber == "1"){
+            Bedrijf bedrijf = new Bedrijf();
+            klant.setNaam(naamKlant);
+            klant.setKlantentype(bedrijf);
+        }
+        if(klantentypeNummber == "2"){
+            Overheid overheid = new Overheid();
+            klant.setNaam(naamKlant);
+            klant.setKlantentype(overheid);
+        }
+        if(klantentypeNummber == "3"){
+            Particulier particulier = new Particulier();
+            klant.setNaam(naamKlant);
+            klant.setKlantentype(particulier);
+        }
+        if(klantentypeNummber == "4"){
+            // hier komt de code die een nieuw klantentype kan aanmaken
+        }
+        Date date = new Date();
         System.out.print("order number? ");
         String orderNumber = scanner.nextLine();
         ArrayList<Option> preselectedparts = quote.partList();
@@ -184,6 +207,8 @@ class shell{
         quote.setQuoteDetails();
         return quote;
     }
+
+
 
 
     public void run(){
@@ -250,49 +275,46 @@ class Klant{
         this.naam = scanner.nextLine().strip();
     }
 
+    public void setNaam(String naam) {
+        this.naam = naam;
+    }
+
+    public void setKlantentype(Klantentype klantentype) {
+        this.klantentype = klantentype;
+    }
+
     public Klantentype getKlantentype() {
         return klantentype;
     }
 }
 abstract class Klantentype{
-    private String naam;
+
     private double hoeveelheidkorting;
 
-
-    public Klantentype(String naam) {
-        this.naam = naam;
-    }
-
-    public String getNaam(){
-        return naam;
-    }
     public double getKorting(){
         return hoeveelheidkorting;
     }
 
+    public void setHoeveelheidkorting(double hoeveelheidkorting) {
+        this.hoeveelheidkorting = hoeveelheidkorting;
+    }
 }
 class Particulier extends Klantentype{
 
 
-    public Particulier(String naam) {
-        super(naam);
-    }
+
 }
 
 class Bedrijf extends Klantentype{
 
 
-    public Bedrijf(String naam) {
-        super(naam);
-    }
+
 }
 
 class Overheid extends Klantentype{
 
 
-    public Overheid(String naam) {
-        super(naam);
-    }
+
 }
 
 class MaakOp{
@@ -324,7 +346,7 @@ class quote{
     Scanner scanner = new Scanner(System.in);
 
     private Klant klant;
-    private String date;
+    private Date date;
     private String orderNumber;
     private boat boat;
     private double bootPrijs;
@@ -336,7 +358,7 @@ class quote{
     quote(){}
 
 
-    quote(Klant klant, String date, String orderNumber, ArrayList<Option> preSelectedParts){
+    quote(Klant klant, Date date, String orderNumber, ArrayList<Option> preSelectedParts){
         this.klant = klant;
         this.date = date;
         this.orderNumber = orderNumber;
@@ -401,10 +423,10 @@ class quote{
     public void setKlant(Klant klant) {
         this.klant = klant;
     }
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
     public String getOrderNumber() {
