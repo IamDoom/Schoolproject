@@ -181,23 +181,25 @@ class shell{
         System.out.println("1. Bedrijf, 2. Overheid, 3. Particulier, 4. Nieuw klantentype");
         String klantentypeNummber = scanner.nextLine();
         Klant klant = new Klant();
-        if(klantentypeNummber == "1"){
-            Bedrijf bedrijf = new Bedrijf();
+        if(klantentypeNummber.equals("1")){
+            Bedrijf bedrijf = new Bedrijf("Bedrijf");
             klant.setNaam(naamKlant);
             klant.setKlantentype(bedrijf);
         }
-        if(klantentypeNummber == "2"){
-            Overheid overheid = new Overheid();
+        if(klantentypeNummber.equals("2")){
+            Overheid overheid = new Overheid("Overheid");
             klant.setNaam(naamKlant);
             klant.setKlantentype(overheid);
         }
-        if(klantentypeNummber == "3"){
-            Particulier particulier = new Particulier();
+        if(klantentypeNummber.equals("3")){
+            Particulier particulier = new Particulier("Particulier");
             klant.setNaam(naamKlant);
             klant.setKlantentype(particulier);
         }
-        if(klantentypeNummber == "4"){
-            // hier komt de code die een nieuw klantentype kan aanmaken
+        if(klantentypeNummber.equals("4")){ // deze optie werkt niet goed ik ga dit fixen
+            NieuwKlantentype nieuwKlantentype = NieuwKlantentype.nieuwklantentype();
+            klant.setNaam(naamKlant);
+            klant.setKlantentype(nieuwKlantentype);
         }
         Date date = new Date();
         System.out.print("order number? ");
@@ -290,7 +292,20 @@ class Klant{
 abstract class Klantentype{
 
     private double hoeveelheidkorting;
+    private String Naam;
 
+
+
+    Klantentype(String naam){
+        this.Naam = naam;
+    }
+    public String getNaam() {
+        return this.Naam;
+    }
+
+    public void setNaam(String naam){
+        this.Naam = naam;
+    }
     public double getKorting(){
         return hoeveelheidkorting;
     }
@@ -300,21 +315,47 @@ abstract class Klantentype{
     }
 }
 class Particulier extends Klantentype{
+    Particulier(String naam){
+        super(naam);
+
+    }
 
 
 
 }
 
 class Bedrijf extends Klantentype{
-
-
-
+    Bedrijf(String naam){
+        super(naam);
+    }
 }
 
 class Overheid extends Klantentype{
+    Overheid(String naam){
+        super(naam);
+    }
+}
 
+class NieuwKlantentype extends Klantentype{
 
-
+    NieuwKlantentype(String naam){
+        super(naam);
+    }
+    @Override
+    public void setHoeveelheidkorting(double hoeveelheidkorting) {
+        super.setHoeveelheidkorting(hoeveelheidkorting);
+    }
+    public static NieuwKlantentype nieuwklantentype(){ //dit werkt nog niet goed fix ik volgende keer
+        NieuwKlantentype nieuwKlantentype = new NieuwKlantentype("Nieuw");
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("wat is de naam van het nieuwe klantentype?");
+        String naamklantentype = scanner.nextLine();
+        nieuwKlantentype.setNaam(naamklantentype);
+        System.out.println("wat is de hoeveelheid korting voor dit klantentype?");
+        double korting = scanner.nextDouble();
+        nieuwKlantentype.setHoeveelheidkorting(korting);
+        return  nieuwKlantentype;
+    }
 }
 
 class MaakOp{
@@ -387,6 +428,8 @@ class quote{
 
         opmaak.tekstOpmaken("clientname: ", klant.getNaam());
         opmaak.tekstOpmaken("ordernummer: ",getOrderNumber());
+        System.out.println("klantentype: " + klant.getKlantentype().getNaam()); //dit is niet juiste formaat maar ik weet niet goed hoe je hebt gedaan hamza
+        //misschien kan je het opknappen en ook nog klant.getKlantentype().getKorting() hierbij zetten ergens
 
         System.out.println("\nPrice quotation for the base off the boat");
         opmaak.PrijzenOpmaken("Boat frame price:", this.bootPrijs);
