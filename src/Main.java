@@ -110,15 +110,15 @@ class OptionList {
 
 
     public void displayOptions() {
-        System.out.println("essential options:");
+        System.out.println("essentiële opties:");
         for(Option option: Options)
             if(option.getEssential()){
-                opmaak.MaakOpOnderdeel(option,"list");
+                opmaak.MaakOpOnderdeel(option,"lijst");
             }
-        System.out.println("extra options:");
+        System.out.println("extra opties:");
         for(Option option: Options){
             if(!option.getEssential()){
-                opmaak.MaakOpOnderdeel(option,"list");
+                opmaak.MaakOpOnderdeel(option,"lijst");
             }
         }
 
@@ -141,29 +141,29 @@ class OptionList {
         }
     }
     public void setOptionDiscount() {
-        System.out.print("To which option do you want to make a change? ");
+        System.out.print("Welke optie krijgt een nieuwe milieukorting?");
         String name = scanner.nextLine().strip();
         for (Option option : Options) {
             if (option.getName().equalsIgnoreCase(name)) {
-                System.out.print("New eco-discount? ");
+                System.out.print("Voer het nieuwe percentage in: ");
                 double discount = scanner.nextDouble();
                 scanner.nextLine();
                 option.setEcoDiscount(discount);
-                System.out.println("Eco-discount changed!");
+                System.out.println("Milieukorting veranderd!");
                 return;
             }
         }
         for (Option option : Options) {
             if (option.getName().equalsIgnoreCase(name)) {
-                System.out.print("New eco-discount? ");
+                System.out.print("Voer het nieuwe percentage in: ");
                 double ecoDiscount = scanner.nextDouble();
                 scanner.nextLine();
                 option.setEcoDiscount(ecoDiscount);
-                System.out.println("Eco-discount changed!");
+                System.out.println("Milieukorting veranderd!");
                 return;
             }
         }
-        System.out.println("Option unavailable!");
+        System.out.println("Deze optie is niet beschikbaar!");
     }
 
 
@@ -202,7 +202,7 @@ class shell{
             klant.setKlantentype(nieuwKlantentype);
         }
         Date date = new Date();
-        System.out.print("order number? ");
+        System.out.print("Order nummer? ");
         String orderNumber = scanner.nextLine();
         ArrayList<Option> preselectedparts = quote.partList();
         quote quote = new quote(klant, date, orderNumber,preselectedparts);
@@ -273,7 +273,7 @@ class Klant{
         return naam;
     }
     public void setNaam(){
-        System.out.print("Client name: ");
+        System.out.print("Klant naaam: ");
         this.naam = scanner.nextLine().strip();
     }
 
@@ -408,11 +408,11 @@ class quote{
 
 
     public void setQuoteDetails(){
-        System.out.print("Enter the base price of the boat: ");
+        System.out.print("Voer de basis prijs van een boot in: ");
         this.bootPrijs = scanner.nextDouble();
-        System.out.print("Enter the VAT-percentage: ");
+        System.out.print("Voer de BTW-percentage in : ");
         this.btwPercentage = scanner.nextDouble();
-        System.out.print("Enter the transportation cost: ");
+        System.out.print("Voer de transportie kosten in : ");
         this.transportKosten = scanner.nextDouble();
         scanner.nextLine();
     }
@@ -431,14 +431,14 @@ class quote{
         System.out.println("klantentype: " + klant.getKlantentype().getNaam()); //dit is niet juiste formaat maar ik weet niet goed hoe je hebt gedaan hamza
         //misschien kan je het opknappen en ook nog klant.getKlantentype().getKorting() hierbij zetten ergens
 
-        System.out.println("\nPrice quotation for the base off the boat");
+        System.out.println("\nofferte basis prijs van een boot");
         opmaak.PrijzenOpmaken("Boat frame price:", this.bootPrijs);
         for(Option option: selectedParts){
             opmaak.MaakOpOnderdeel(option,"list");
         }
-        opmaak.PrijzenOpmaken("Transport costs:" , this.transportKosten);
-        opmaak.PrijzenOpmaken("VAT (" + this.btwPercentage + "%):" , (this.bootPrijs * this.btwPercentage / 100));
-        opmaak.PrijzenOpmaken("Total Price:" , this.calculateTotal());
+        opmaak.PrijzenOpmaken("Transport kosten:" , this.transportKosten);
+        opmaak.PrijzenOpmaken("BTW (" + this.btwPercentage + "%):" , (this.bootPrijs * this.btwPercentage / 100));
+        opmaak.PrijzenOpmaken("Totale prijs:" , this.calculateTotal());
     }
 
     public ArrayList<Option> partList(){
