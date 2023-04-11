@@ -51,7 +51,7 @@ class Option {
 }
 
 
-class OptionList extends MaakOp {
+class PartList extends MaakOp {
     Scanner scanner = new Scanner(System.in);
     DecimalFormat df = new DecimalFormat("#0.00");
     private ArrayList<Option> Options;
@@ -66,7 +66,7 @@ class OptionList extends MaakOp {
     Option towerCranes = new Option("tower cranes", 2.0,false);
     Option flagDecor = new Option("flags decoration", 2.0,false);
 
-    public OptionList() {
+    public PartList() {
 
        Options = new ArrayList<>();
        Options.add(Hull);
@@ -170,7 +170,7 @@ class OptionList extends MaakOp {
 
 class shell{
     Scanner scanner = new Scanner(System.in);
-    OptionList optionList = new OptionList();
+    PartList PartList = new PartList();
     quote quote = new quote();
 
     public quote createQuote() {
@@ -223,16 +223,16 @@ class shell{
                     quote.printQuote();
                 }
                 case "create" -> {
-                    optionList.createOption();
+                    PartList.createOption();
                 }
                 case "add" -> {     // for adding parts to the ship being built
-                    quote.addOption(optionList.getOptions());
+                    quote.addOption(PartList.getOptions());
                 }
                 case "discount" -> {
-                    optionList.setOptionDiscount();
+                    PartList.setOptionDiscount();
                 }
                 case "list" -> {
-                    optionList.displayOptions();
+                    PartList.displayOptions();
                 }
                 case "finalize" ->{
                     System.out.println("finalizing before shutting down");
@@ -376,6 +376,7 @@ abstract class MaakOp{
             }
         }
     }
+
 }
 
 
