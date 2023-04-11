@@ -51,11 +51,10 @@ class Option {
 }
 
 
-class OptionList {
+class OptionList extends MaakOp {
     Scanner scanner = new Scanner(System.in);
     DecimalFormat df = new DecimalFormat("#0.00");
     private ArrayList<Option> Options;
-    MaakOp opmaak = new MaakOp();
 
     Option Hull = new Option("hull", 2.0,true);
     Option HullFrame = new Option("hull frame", 2.0,true);
@@ -113,12 +112,12 @@ class OptionList {
         System.out.println("essentiële opties:");
         for(Option option: Options)
             if(option.getEssential()){
-                opmaak.MaakOpOnderdeel(option,"lijst");
+                MaakOpOnderdeel(option,"lijst");
             }
         System.out.println("extra opties:");
         for(Option option: Options){
             if(!option.getEssential()){
-                opmaak.MaakOpOnderdeel(option,"lijst");
+                MaakOpOnderdeel(option,"lijst");
             }
         }
 
@@ -175,30 +174,29 @@ class shell{
     quote quote = new quote();
 
     public quote createQuote() {
-        System.out.println("Wat is de naam van uw klant?");
-        String naamKlant = scanner.nextLine();
+
         System.out.println("voor welk klantentype wilt u een offerte maken?");
         System.out.println("1. Bedrijf, 2. Overheid, 3. Particulier, 4. Nieuw klantentype");
         String klantentypeNummber = scanner.nextLine();
         Klant klant = new Klant();
         if(klantentypeNummber.equals("1")){
             Bedrijf bedrijf = new Bedrijf("Bedrijf");
-            klant.setNaam(naamKlant);
+
             klant.setKlantentype(bedrijf);
         }
         if(klantentypeNummber.equals("2")){
             Overheid overheid = new Overheid("Overheid");
-            klant.setNaam(naamKlant);
+
             klant.setKlantentype(overheid);
         }
         if(klantentypeNummber.equals("3")){
             Particulier particulier = new Particulier("Particulier");
-            klant.setNaam(naamKlant);
+
             klant.setKlantentype(particulier);
         }
         if(klantentypeNummber.equals("4")){ // deze optie werkt niet goed ik ga dit fixen
             NieuwKlantentype nieuwKlantentype = NieuwKlantentype.nieuwklantentype();
-            klant.setNaam(naamKlant);
+
             klant.setKlantentype(nieuwKlantentype);
         }
         Date date = new Date();
@@ -358,7 +356,7 @@ class NieuwKlantentype extends Klantentype{
     }
 }
 
-class MaakOp{
+abstract class MaakOp{
     DecimalFormat df = new DecimalFormat("#0.00");
     public void tekstOpmaken(String input, String variable){
         System.out.print(input);
@@ -382,8 +380,7 @@ class MaakOp{
 
 
 
-class quote{
-    MaakOp opmaak = new MaakOp();
+class quote extends MaakOp{
     Scanner scanner = new Scanner(System.in);
 
     private Klant klant;
@@ -426,19 +423,19 @@ class quote{
         System.out.println("de volgende offerte is een simpele opmaak voor een boot");
         System.out.println("dit is niet per se een definitieve versie\n");
 
-        opmaak.tekstOpmaken("clientname: ", klant.getNaam());
-        opmaak.tekstOpmaken("ordernummer: ",getOrderNumber());
+        tekstOpmaken("clientname: ", klant.getNaam());
+        tekstOpmaken("ordernummer: ",getOrderNumber());
         System.out.println("klantentype: " + klant.getKlantentype().getNaam()); //dit is niet juiste formaat maar ik weet niet goed hoe je hebt gedaan hamza
         //misschien kan je het opknappen en ook nog klant.getKlantentype().getKorting() hierbij zetten ergens
 
         System.out.println("\nofferte basis prijs van een boot");
-        opmaak.PrijzenOpmaken("Boat frame price:", this.bootPrijs);
+        PrijzenOpmaken("Boat frame price:", this.bootPrijs);
         for(Option option: selectedParts){
-            opmaak.MaakOpOnderdeel(option,"list");
+            MaakOpOnderdeel(option,"list");
         }
-        opmaak.PrijzenOpmaken("Transport kosten:" , this.transportKosten);
-        opmaak.PrijzenOpmaken("BTW (" + this.btwPercentage + "%):" , (this.bootPrijs * this.btwPercentage / 100));
-        opmaak.PrijzenOpmaken("Totale prijs:" , this.calculateTotal());
+        PrijzenOpmaken("Transport kosten:" , this.transportKosten);
+        PrijzenOpmaken("BTW (" + this.btwPercentage + "%):" , (this.bootPrijs * this.btwPercentage / 100));
+        PrijzenOpmaken("Totale prijs:" , this.calculateTotal());
     }
 
     public ArrayList<Option> partList(){
