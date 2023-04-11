@@ -112,12 +112,12 @@ class PartList extends MaakOp {
         System.out.println("essentiële opties:");
         for(Option option: Options)
             if(option.getEssential()){
-                MaakOpOnderdeel(option,"lijst");
+                MaakOpOnderdeel(option,"list"); //dit moet
             }
         System.out.println("extra opties:");
         for(Option option: Options){
             if(!option.getEssential()){
-                MaakOpOnderdeel(option,"lijst");
+                MaakOpOnderdeel(option,"list");
             }
         }
 
