@@ -283,7 +283,7 @@ class Klant{
         return naam;
     }
     public void setNaam(){
-        System.out.print("Klant naaam: ");
+        System.out.print("Klant naam: ");
         this.naam = scanner.nextLine().strip();
     }
 
