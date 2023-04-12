@@ -1,3 +1,7 @@
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -49,7 +53,6 @@ class Part {
         return this.essential;
     }
 }
-
 
 class PartList extends MaakOp {
     Scanner scanner = new Scanner(System.in);
@@ -106,8 +109,6 @@ class PartList extends MaakOp {
         Parts.add(option);
     }
 
-
-
     public void displayParts() {
         System.out.println("essentiële opties:");
         for(Part part: Parts)
@@ -120,9 +121,7 @@ class PartList extends MaakOp {
                 MaakOpOnderdeel(part,"list");
             }
         }
-
     }
-
     private boolean essentialOrNot() {
 
         while (true) {
@@ -164,10 +163,7 @@ class PartList extends MaakOp {
         }
         System.out.println("Deze optie is niet beschikbaar!");
     }
-
-
 }
-
 class shell{
     Scanner scanner = new Scanner(System.in);
     PartList PartList = new PartList();
@@ -179,6 +175,7 @@ class shell{
         System.out.println("1. Bedrijf, 2. Overheid, 3. Particulier, 4. Nieuw klantentype");
         String klantentypeNummber = scanner.nextLine().strip();
         Klant klant = new Klant();
+
         switch (klantentypeNummber){
             case "1" ->{
                 Bedrijf bedrijf = new Bedrijf("Bedrijf");
@@ -196,8 +193,8 @@ class shell{
                 NieuwKlantentype nieuwKlantentype = NieuwKlantentype.nieuwklantentype();
                 klant.setKlantentype(nieuwKlantentype);
             }
-        }
 
+        }
         Date date = new Date();
         System.out.print("Order nummer? ");
         String orderNumber = scanner.nextLine();
@@ -206,10 +203,6 @@ class shell{
         quote.setQuoteDetails();
         return quote;
     }
-
-
-
-
     public void run(){
         boolean shell = true;
         while(shell) {
@@ -220,6 +213,28 @@ class shell{
                 }
                 case "print" ->{
                     quote.printQuote();
+                    System.out.println("Enter the filename to save the quote to:");
+                    String fileName = scanner.nextLine().strip();
+
+                    // create a new file with the given filename
+                    File file = new File(fileName);
+                    try {
+                        // create a new FileWriter object to write to the file
+                        FileWriter writer = new FileWriter(file);
+
+                        // write the quote to the file
+                        writer.write(quote.toString());
+
+                        // close the FileWriter
+                        writer.close();
+
+                        // print a success message
+                        System.out.println("Quote written to file " + fileName);
+                    } catch (IOException e) {
+                        // if there was an error writing to the file, print an error message
+                        System.out.println("Error writing to file " + fileName);
+                    }
+// ik heb overal geprobeerd en dit leek me het beste plek voor nu om te adden ik ga hem nog verplaatsen maar ik moet eerst nog een betere plek vinden ik bespreek dit donderdag met jullie. ~pratik
                 }
                 case "create" -> {
                     PartList.createPart();
@@ -264,8 +279,6 @@ class Klant{
         this(name);
         this.klantentype = klantentype;
     }
-
-
     public String getNaam() {
         return naam;
     }
@@ -291,8 +304,6 @@ abstract class Klantentype{
     private double hoeveelheidkorting;
     private String Naam;
 
-
-
     Klantentype(String naam){
         this.Naam = naam;
     }
@@ -316,23 +327,17 @@ class Particulier extends Klantentype{
         super(naam);
 
     }
-
-
-
 }
-
 class Bedrijf extends Klantentype{
     Bedrijf(String naam){
         super(naam);
     }
 }
-
 class Overheid extends Klantentype{
     Overheid(String naam){
         super(naam);
     }
 }
-
 class NieuwKlantentype extends Klantentype{
 
     NieuwKlantentype(String naam){
@@ -354,7 +359,6 @@ class NieuwKlantentype extends Klantentype{
         return  nieuwKlantentype;
     }
 }
-
 abstract class MaakOp{
     DecimalFormat df = new DecimalFormat("#0.00");
     public void tekstOpmaken(String input, String variable){
@@ -377,9 +381,6 @@ abstract class MaakOp{
     }
 
 }
-
-
-
 class quote extends MaakOp{
     Scanner scanner = new Scanner(System.in);
 
@@ -402,7 +403,6 @@ class quote extends MaakOp{
         this.orderNumber = orderNumber;
         this.selectedParts = preSelectedParts;
     }
-
 
     public void setQuoteDetails(){
         System.out.print("Voer de basis prijs van een boot in: ");
@@ -437,7 +437,6 @@ class quote extends MaakOp{
         PrijzenOpmaken("BTW (" + this.btwPercentage + "%):" , (this.bootPrijs * this.btwPercentage / 100));
         PrijzenOpmaken("Totale prijs:" , this.calculateTotal());
     }
-
     public ArrayList<Part> partList(){
         return selectedParts;
     }
@@ -457,8 +456,6 @@ class quote extends MaakOp{
     public Klant getKlant() {
         return klant;
     }
-
-
 
     public void setKlant(Klant klant) {
         this.klant = klant;
@@ -482,11 +479,9 @@ class quote extends MaakOp{
     public void setBoat(boat boat) {
         this.boat = boat;
     }
-
 }
 
 class boatList{
-
 }
 
 class boat{
@@ -527,8 +522,6 @@ class boat{
 
 /* this is a program that produces quotations complying to the conditions of the client "bedrijf 42"
 it should run in a while loop, and we intend to work with the basis of a template */
-
-
 public class Main {
     public static void main(String[] args) {
         shell shell = new shell();
