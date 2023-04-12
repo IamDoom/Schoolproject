@@ -245,6 +245,9 @@ class shell{
                 case "add" -> {     // for adding parts to the ship being built
                     quote.addPart(PartList.getParts());
                 }
+                case "remove" ->{
+                    quote.RemovePart(PartList.getParts());
+                }
                 case "discount" -> {
                     PartList.setOptionDiscount();
                 }
@@ -415,15 +418,36 @@ class quote extends MaakOp{
         this.totaalprijs = bootPrijs+vatAmount+this.transportKosten;
         return this.totaalprijs;
     }
+    public OnthoudenVanNumbers calculateTotalOfParts(){ //je kunt dit gebruiken als berekening van de prijs van de onderdelen
+        double totaalzonderkorting = 0; // maak eerst een nieuw Onthoudenvannummers object aan en stel hem gelijk aan je quote.calculateTotalOfParts
+        double totaalmetkorting = 0; //dan kun je getter gebruiken om de gegeven te accessen
+        double korting = 0;
+        for(Part selectedpart : selectedParts) {
+            totaalzonderkorting += selectedpart.getPrice();
+            if (selectedpart.getDiscount() != 0) {
+                totaalmetkorting += selectedpart.getPrice() * selectedpart.getDiscount();
+
+            }
+            else{
+                totaalmetkorting += selectedpart.getPrice();
+
+            }
+
+        }
+        korting = totaalzonderkorting - totaalmetkorting;
+        OnthoudenVanNumbers onthoudenVanNumbers = new OnthoudenVanNumbers(totaalzonderkorting, totaalmetkorting, korting);
+        return onthoudenVanNumbers;
+
+    }
 
     public void printQuote(){
+
         System.out.println("de volgende offerte is een simpele opmaak voor een boot");
         System.out.println("dit is niet per se een definitieve versie\n");
 
         tekstOpmaken("clientname: ", klant.getNaam());
         tekstOpmaken("ordernummer: ",getOrderNumber());
-        tekstOpmaken("klantentype: ", klant.getKlantentype().getNaam()); //dit is niet juiste formaat maar ik weet niet goed hoe je hebt gedaan hamza
-        //misschien kan je het opknappen en ook nog klant.getKlantentype().getKorting() hierbij zetten ergens
+        tekstOpmaken("klantentype: ", klant.getKlantentype().getNaam());
 
         System.out.println("\nofferte basis prijs van een boot");
         PrijzenOpmaken("Boat frame price:", this.bootPrijs);
@@ -445,6 +469,17 @@ class quote extends MaakOp{
             if (part.getName().equalsIgnoreCase(optieNaam)){
                 selectedParts.add(part);
                 System.out.println("onderdeel " + part.getName() + " is succesvol toegevoegd");
+            }
+
+        }
+    }
+    public void RemovePart(ArrayList<Part> parts){
+        System.out.print("Welke onderdeel wilt u verwijderen? ");
+        String optieNaam = scanner.nextLine();
+        for(Part part : parts){
+            if (part.getName().equalsIgnoreCase(optieNaam)){
+                selectedParts.remove(part);
+                System.out.println("onderdeel " + part.getName() + " is succesvol verwijderd");
             }
 
         }
@@ -515,6 +550,9 @@ class boat{
         this.customerType = customerType;
     }
 
+}
+
+record OnthoudenVanNumbers(double totaalzonderkorting, double totaalmetkorting, double korting) {
 }
 
 /* this is a program that produces quotations complying to the conditions of the client "bedrijf 42"
