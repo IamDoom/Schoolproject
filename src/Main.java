@@ -1,7 +1,5 @@
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -213,28 +211,29 @@ class shell{
                 }
                 case "print" ->{
                     quote.printQuote();
-                    System.out.println("Enter the filename to save the quote to:");
+                    System.out.println("Geef de naam van het bestand waar de quote word opgeslagen:");
                     String fileName = scanner.nextLine().strip();
 
                     // create a new file with the given filename
                     File file = new File(fileName);
                     try {
                         // create a new FileWriter object to write to the file
-                        FileWriter writer = new FileWriter(file);
-
+                        FileOutputStream fw = new FileOutputStream(file);
+                        PrintWriter pw = new PrintWriter(fw);
                         // write the quote to the file
-                        writer.write(quote.toString());
+                       pw.println(createQuote());
 
                         // close the FileWriter
-                        writer.close();
+                        pw.close();
 
                         // print a success message
-                        System.out.println("Quote written to file " + fileName);
+                        System.out.println("Quote is opgeslagen in " + fileName);
                     } catch (IOException e) {
                         // if there was an error writing to the file, print an error message
-                        System.out.println("Error writing to file " + fileName);
+                        System.out.println("Error tijdens het schrijven van de quote in " + fileName);
                     }
-// ik heb overal geprobeerd en dit leek me het beste plek voor nu om te adden ik ga hem nog verplaatsen maar ik moet eerst nog een betere plek vinden ik bespreek dit donderdag met jullie. ~pratik
+//hij is nog niet af voorlopig showed hij alleen "quote@685f4c2e" ik ben nog opzoek naar een oplossing.
+//ik heb overal geprobeerd en dit leek me het beste plek voor nu om te adden ik ga hem nog verplaatsen maar ik moet eerst nog een betere plek vinden ik bespreek dit donderdag met jullie. ~pratik
                 }
                 case "create" -> {
                     PartList.createPart();
@@ -409,7 +408,7 @@ class quote extends MaakOp{
         this.bootPrijs = scanner.nextDouble();
         System.out.print("Voer de BTW-percentage in : ");
         this.btwPercentage = scanner.nextDouble();
-        System.out.print("Voer de transportie kosten in : ");
+        System.out.print("Voer de transport kosten in : ");
         this.transportKosten = scanner.nextDouble();
         scanner.nextLine();
     }
