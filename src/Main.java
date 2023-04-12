@@ -168,11 +168,10 @@ class shell{
     quote quote = new quote();
 
     public quote createQuote() {
-
+        Klant klant = new Klant();
         System.out.println("voor welk klantentype wilt u een offerte maken?");
         System.out.println("1. Bedrijf, 2. Overheid, 3. Particulier, 4. Nieuw klantentype");
         String klantentypeNummber = scanner.nextLine().strip();
-        Klant klant = new Klant();
 
         switch (klantentypeNummber){
             case "1" ->{
@@ -188,8 +187,13 @@ class shell{
                 klant.setKlantentype(particulier);
             }
             case "4" ->{
-                NieuwKlantentype nieuwKlantentype = NieuwKlantentype.nieuwklantentype();
+                System.out.println("wat is de naam van het nieuwe klantentype?");
+                String naamklantentype = scanner.nextLine();
+                System.out.println("wat is de hoeveelheid korting voor dit klantentype?");
+                double korting = scanner.nextDouble();
+                NieuwKlantentype nieuwKlantentype = new NieuwKlantentype(naamklantentype, korting);
                 klant.setKlantentype(nieuwKlantentype);
+                scanner.nextLine();
             }
 
         }
@@ -306,6 +310,10 @@ abstract class Klantentype{
     Klantentype(String naam){
         this.Naam = naam;
     }
+    Klantentype(String naam, double hoeveelheidkorting){
+        this(naam);
+        this.hoeveelheidkorting = hoeveelheidkorting;
+    }
     public String getNaam() {
         return this.Naam;
     }
@@ -339,24 +347,14 @@ class Overheid extends Klantentype{
 }
 class NieuwKlantentype extends Klantentype{
 
-    NieuwKlantentype(String naam){
-        super(naam);
+    NieuwKlantentype(String naam, double hoeveelheidkorting){
+        super(naam, hoeveelheidkorting);
     }
     @Override
     public void setHoeveelheidkorting(double hoeveelheidkorting) {
         super.setHoeveelheidkorting(hoeveelheidkorting);
     }
-    public static NieuwKlantentype nieuwklantentype(){ //dit werkt nog niet goed fix ik volgende keer
-        NieuwKlantentype nieuwKlantentype = new NieuwKlantentype("Nieuw");
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("wat is de naam van het nieuwe klantentype?");
-        String naamklantentype = scanner.nextLine();
-        nieuwKlantentype.setNaam(naamklantentype);
-        System.out.println("wat is de hoeveelheid korting voor dit klantentype?");
-        double korting = scanner.nextDouble();
-        nieuwKlantentype.setHoeveelheidkorting(korting);
-        return  nieuwKlantentype;
-    }
+
 }
 abstract class MaakOp{
     DecimalFormat df = new DecimalFormat("#0.00");
