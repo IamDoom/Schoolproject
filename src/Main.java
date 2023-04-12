@@ -1,3 +1,5 @@
+
+import java.io.*;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -49,7 +51,6 @@ class Part {
         return this.essential;
     }
 }
-
 
 class PartList extends MaakOp {
     Scanner scanner = new Scanner(System.in);
@@ -106,8 +107,6 @@ class PartList extends MaakOp {
         Parts.add(option);
     }
 
-
-
     public void displayParts() {
         System.out.println("essentiële opties:");
         for(Part part: Parts)
@@ -120,9 +119,7 @@ class PartList extends MaakOp {
                 MaakOpOnderdeel(part,"list");
             }
         }
-
     }
-
     private boolean essentialOrNot() {
 
         while (true) {
@@ -164,21 +161,18 @@ class PartList extends MaakOp {
         }
         System.out.println("Deze optie is niet beschikbaar!");
     }
-
-
 }
-
 class shell{
     Scanner scanner = new Scanner(System.in);
     PartList PartList = new PartList();
     quote quote = new quote();
 
     public quote createQuote() {
-
+        Klant klant = new Klant();
         System.out.println("voor welk klantentype wilt u een offerte maken?");
         System.out.println("1. Bedrijf, 2. Overheid, 3. Particulier, 4. Nieuw klantentype");
         String klantentypeNummber = scanner.nextLine().strip();
-        Klant klant = new Klant();
+
         switch (klantentypeNummber){
             case "1" ->{
                 Bedrijf bedrijf = new Bedrijf("Bedrijf");
@@ -193,11 +187,16 @@ class shell{
                 klant.setKlantentype(particulier);
             }
             case "4" ->{
-                NieuwKlantentype nieuwKlantentype = NieuwKlantentype.nieuwklantentype();
+                System.out.println("wat is de naam van het nieuwe klantentype?");
+                String naamklantentype = scanner.nextLine();
+                System.out.println("wat is de hoeveelheid korting voor dit klantentype?");
+                double korting = scanner.nextDouble();
+                NieuwKlantentype nieuwKlantentype = new NieuwKlantentype(naamklantentype, korting);
                 klant.setKlantentype(nieuwKlantentype);
+                scanner.nextLine();
             }
-        }
 
+        }
         Date date = new Date();
         System.out.print("Order nummer? ");
         String orderNumber = scanner.nextLine();
@@ -260,8 +259,6 @@ class Klant{
         this(name);
         this.klantentype = klantentype;
     }
-
-
     public String getNaam() {
         return naam;
     }
@@ -287,10 +284,12 @@ abstract class Klantentype{
     private double hoeveelheidkorting;
     private String Naam;
 
-
-
     Klantentype(String naam){
         this.Naam = naam;
+    }
+    Klantentype(String naam, double hoeveelheidkorting){
+        this(naam);
+        this.hoeveelheidkorting = hoeveelheidkorting;
     }
     public String getNaam() {
         return this.Naam;
@@ -312,27 +311,21 @@ class Particulier extends Klantentype{
         super(naam);
 
     }
-
-
-
 }
-
 class Bedrijf extends Klantentype{
     Bedrijf(String naam){
         super(naam);
     }
 }
-
 class Overheid extends Klantentype{
     Overheid(String naam){
         super(naam);
     }
 }
-
 class NieuwKlantentype extends Klantentype{
 
-    NieuwKlantentype(String naam){
-        super(naam);
+    NieuwKlantentype(String naam, double hoeveelheidkorting){
+        super(naam, hoeveelheidkorting);
     }
     @Override
     public void setHoeveelheidkorting(double hoeveelheidkorting) {
@@ -350,7 +343,6 @@ class NieuwKlantentype extends Klantentype{
         return  nieuwKlantentype;
     }
 }
-
 abstract class MaakOp{
     DecimalFormat df = new DecimalFormat("#0.00");
     public void tekstOpmaken(String input, String variable){
@@ -373,9 +365,6 @@ abstract class MaakOp{
     }
 
 }
-
-
-
 class quote extends MaakOp{
     Scanner scanner = new Scanner(System.in);
 
@@ -399,13 +388,12 @@ class quote extends MaakOp{
         this.selectedParts = preSelectedParts;
     }
 
-
     public void setQuoteDetails(){
         System.out.print("Voer de basis prijs van een boot in: ");
         this.bootPrijs = scanner.nextDouble();
         System.out.print("Voer de BTW-percentage in : ");
         this.btwPercentage = scanner.nextDouble();
-        System.out.print("Voer de transportie kosten in : ");
+        System.out.print("Voer de transport kosten in : ");
         this.transportKosten = scanner.nextDouble();
         scanner.nextLine();
     }
@@ -414,8 +402,30 @@ class quote extends MaakOp{
         this.totaalprijs = bootPrijs+vatAmount+this.transportKosten;
         return this.totaalprijs;
     }
+    public OnthoudenVanNumbers calculateTotalOfParts(){ //je kunt dit gebruiken als berekening van de prijs van de onderdelen
+        double totaalzonderkorting = 0; // maak eerst een nieuw Onthoudenvannummers object aan en stel hem gelijk aan je quote.calculateTotalOfParts
+        double totaalmetkorting = 0; //dan kun je getter gebruiken om de gegeven te accessen
+        double korting = 0;
+        for(Part selectedpart : selectedParts) {
+            totaalzonderkorting += selectedpart.getPrice();
+            if (selectedpart.getDiscount() != 0) {
+                totaalmetkorting += selectedpart.getPrice() * selectedpart.getDiscount();
+
+            }
+            else{
+                totaalmetkorting += selectedpart.getPrice();
+
+            }
+
+        }
+        korting = totaalzonderkorting - totaalmetkorting;
+        OnthoudenVanNumbers onthoudenVanNumbers = new OnthoudenVanNumbers(totaalzonderkorting, totaalmetkorting, korting);
+        return onthoudenVanNumbers;
+
+    }
 
     public void printQuote(){
+
         System.out.println("de volgende offerte is een simpele opmaak voor een boot");
         System.out.println("dit is niet per se een definitieve versie\n");
 
@@ -432,7 +442,6 @@ class quote extends MaakOp{
         PrijzenOpmaken("BTW (" + this.btwPercentage + "%):" , (this.bootPrijs * this.btwPercentage / 100));
         PrijzenOpmaken("Totale prijs:" , this.calculateTotal());
     }
-
     public ArrayList<Part> partList(){
         return selectedParts;
     }
@@ -448,12 +457,21 @@ class quote extends MaakOp{
 
         }
     }
+    public void RemovePart(ArrayList<Part> parts){
+        System.out.print("Welke onderdeel wilt u verwijderen? ");
+        String optieNaam = scanner.nextLine();
+        for(Part part : parts){
+            if (part.getName().equalsIgnoreCase(optieNaam)){
+                selectedParts.remove(part);
+                System.out.println("onderdeel " + part.getName() + " is succesvol verwijderd");
+            }
+
+        }
+    }
 
     public Klant getKlant() {
         return klant;
     }
-
-
 
     public void setKlant(Klant klant) {
         this.klant = klant;
@@ -477,11 +495,9 @@ class quote extends MaakOp{
     public void setBoat(boat boat) {
         this.boat = boat;
     }
-
 }
 
 class boatList{
-
 }
 
 class boat{
@@ -520,10 +536,11 @@ class boat{
 
 }
 
+record OnthoudenVanNumbers(double totaalzonderkorting, double totaalmetkorting, double korting) {
+}
+
 /* this is a program that produces quotations complying to the conditions of the client "bedrijf 42"
 it should run in a while loop, and we intend to work with the basis of a template */
-
-
 public class Main {
     public static void main(String[] args) {
         shell shell = new shell();
