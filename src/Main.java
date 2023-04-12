@@ -207,42 +207,38 @@ class shell{
         return quote;
     }
 
-
-
-
     public void run(){
         boolean shell = true;
         while(shell) {
             String input = scanner.nextLine().strip();
             switch (input) {
-                case "setup" ->{
-                    quote = createQuote();
-                }
-                case "print" ->{
-                    quote.printQuote();
-                }
-                case "create" -> {
-                    PartList.createPart();
-                }
-                case "add" -> {     // for adding parts to the ship being built
-                    quote.addPart(PartList.getParts());
-                }
-                case "discount" -> {
-                    PartList.setOptionDiscount();
-                }
-                case "list" -> {
-                    PartList.displayParts();
-                }
+                case "setup" -> quote = createQuote();
+
+                case "print" -> quote.printQuote();
+
+                case "create" -> PartList.createPart();
+
+                case "add" -> quote.addPart(PartList.getParts());
+
+                case "discount" -> PartList.setOptionDiscount();
+
+                case "list" -> PartList.displayParts();
+
                 case "finalize" ->{
                     System.out.println("finalizing before shutting down");
                     shell = false;
                 }
-                case "exit" -> {
-                    shell = false;
-                }
+                case "exit" -> shell = false;
+
                 case "help" -> {
-                    System.out.println("hier komt een lijst met termen en wellicht een beschrijving");
-            }
+                    System.out.println("<SETUP>    'voor het maken van een offerte'");
+                    System.out.println("<PRINT>    'print de offerte zoals die er op het moment uit ziet'");
+                    System.out.println("<CREATE>   'voor het aanmaken van een onderdeel'");
+                    System.out.println("<ADD>      'voegt een bestaand onderdeel toe'");
+                    System.out.println("<LIST>     'toont een lijst van beschikbare onderdelen'");
+                    System.out.println("<FINALIZE> 'slaat de offerte op en sluit het programma af'");
+                    System.out.println("<EXIT>     'sluit het programma af'");
+                }
 
                 default -> System.out.println("please use a valid input use 'help' for help");
             }
@@ -270,7 +266,7 @@ class Klant{
         return naam;
     }
     public void setNaam(){
-        System.out.print("Klant naaam: ");
+        System.out.print("Klant naam: ");
         this.naam = scanner.nextLine().strip();
     }
 
@@ -425,8 +421,7 @@ class quote extends MaakOp{
 
         tekstOpmaken("clientname: ", klant.getNaam());
         tekstOpmaken("ordernummer: ",getOrderNumber());
-        tekstOpmaken("klantentype: ", klant.getKlantentype().getNaam()); //dit is niet juiste formaat maar ik weet niet goed hoe je hebt gedaan hamza
-        //misschien kan je het opknappen en ook nog klant.getKlantentype().getKorting() hierbij zetten ergens
+        tekstOpmaken("klantentype: ", klant.getKlantentype().getNaam());
 
         System.out.println("\nofferte basis prijs van een boot");
         PrijzenOpmaken("Boat frame price:", this.bootPrijs);
