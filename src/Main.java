@@ -163,7 +163,6 @@ class PartList extends MaakOp {
         }
         System.out.println("Deze optie is niet beschikbaar!");
     }
-
     public void setEcoDiscount(String hull, double newDiscount) {
     }
 }
@@ -347,7 +346,7 @@ class NieuwKlantentype extends Klantentype{
         return  nieuwKlantentype;
     }
 }
-abstract class MaakOp{
+class MaakOp{
     DecimalFormat df = new DecimalFormat("#0.00");
     public void tekstOpmaken(String input, String variable){
         System.out.print(input);
