@@ -199,6 +199,7 @@ class shell{
                 klant.setKlantentype(nieuwKlantentype);
                 scanner.nextLine();
             }
+            default -> System.out.println("kies een geldige optie");
 
         }
         Date date = new Date();
@@ -222,6 +223,8 @@ class shell{
                 case "create" -> PartList.createPart();
 
                 case "add" -> quote.addPart(PartList.getParts());
+
+                case "remove" -> quote.RemovePart(PartList.getParts());
 
                 case "discount" -> PartList.setOptionDiscount();
 
@@ -451,17 +454,22 @@ class quote extends MaakOp{
     }
 
     public void addPart(ArrayList<Part> parts){
+        boolean checkOfOnderdeelisToegevoegt = false;
         System.out.print("Welke onderdeel wilt u toevoegen aan de boot? ");
         String optieNaam = scanner.nextLine();
         for(Part part : parts){
             if (part.getName().equalsIgnoreCase(optieNaam)){
                 selectedParts.add(part);
                 System.out.println("onderdeel " + part.getName() + " is succesvol toegevoegd");
+                checkOfOnderdeelisToegevoegt = true;
             }
-
+        }
+        if(!checkOfOnderdeelisToegevoegt){
+            System.out.println("er zijn geen onderdelen met de naam " + optieNaam + " gevonden");
         }
     }
     public void RemovePart(ArrayList<Part> parts){
+        boolean checkOfOnderdeelisToegevoegt = false;
         System.out.print("Welke onderdeel wilt u verwijderen? ");
         String optieNaam = scanner.nextLine();
         for(Part part : parts){
@@ -469,7 +477,9 @@ class quote extends MaakOp{
                 selectedParts.remove(part);
                 System.out.println("onderdeel " + part.getName() + " is succesvol verwijderd");
             }
-
+        }
+        if(!checkOfOnderdeelisToegevoegt){
+            System.out.println("er zijn geen onderdelen met de naam " + optieNaam + " gevonden");
         }
     }
 
