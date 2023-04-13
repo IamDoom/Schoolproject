@@ -10,6 +10,7 @@ class Part {
     private boolean essential;
     private String description;
     private double discount;
+    private double EcoDiscount;
 
     Part(String name, double price, boolean essential, String description) {
         this.name = name;
@@ -17,6 +18,7 @@ class Part {
         this.essential = essential;
         this.description = description;
         this.discount = 0.0;
+        this.EcoDiscount = 0.0;
     }
     Part(String name, double price, boolean essential) {
         this(name, price, essential, null);
@@ -28,8 +30,8 @@ class Part {
     public String getDescription(){
         return this.description;
     }
-    public void setEcoDiscount(double discount) {
-        this.discount = discount;
+    public void setEcoDiscount(double EcoDiscount) {
+        this.EcoDiscount = EcoDiscount;
     }
     public double getPrice() {
         return this.price ;
@@ -38,13 +40,14 @@ class Part {
         return this.name;
     }
     public double applyDiscount(){
-        double inverted = 100-this.discount;
+        double inverted = 100-this.discount - (this.EcoDiscount);
         return ((inverted/100)*price);
     }
 
     public double getDiscount() {
         return discount;
     }
+    public double getEcoDiscount(){return EcoDiscount;}
 
     public boolean getEssential() {
         return this.essential;
@@ -160,6 +163,9 @@ class PartList extends MaakOp {
         }
         System.out.println("Deze optie is niet beschikbaar!");
     }
+
+    public void setEcoDiscount(String hull, double newDiscount) {
+    }
 }
 class shell{
     Scanner scanner = new Scanner(System.in);
@@ -236,6 +242,7 @@ class shell{
                     System.out.println("<LIST>     'toont een lijst van beschikbare onderdelen'");
                     System.out.println("<FINALIZE> 'slaat de offerte op en sluit het programma af'");
                     System.out.println("<EXIT>     'sluit het programma af'");
+                    System.out.println("<DISCOUNT> 'voegt korting toe aan een onderdeel");
                 }
 
                 default -> System.out.println("please use a valid input use 'help' for help");
@@ -351,6 +358,7 @@ abstract class MaakOp{
 
     }
     public void MaakOpOnderdeel(Part part, String type){
+
         switch(type) {
             case "list" -> {
                 System.out.printf("\t%-17S> %33s\n", part.getName(), ">€" + df.format(part.getPrice()));
@@ -494,14 +502,27 @@ class quote extends MaakOp{
     }
 }
 
-class boatList{
+class boatList {
+    private ArrayList<boat> boats;
+
+    public boatList() {boats = new ArrayList<>();}
+
+    public void addBoat(String type, String name, String serialNumber) {
+        boat newBoat = new boat();
+        newBoat.setType(type);
+        newBoat.setName(name);
+        newBoat.setSerialNumber(serialNumber);
+        boats.add(newBoat);
+    }
+    public ArrayList<boat> getBoats(){return boats;}
 }
+
 
 class boat{
     private String type;
     private String name;
     private String serialNumber;
-    private String customerType;
+
     private ArrayList<Part> parts;
 
     public String getType() {
@@ -527,9 +548,8 @@ class boat{
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
-    public void setCustomerType(String customerType) {
-        this.customerType = customerType;
-    }
+
+
 
 }
 
@@ -542,6 +562,8 @@ public class Main {
     public static void main(String[] args) {
         shell shell = new shell();
         shell.run();
+        boatList myBoatList = new boatList();
+        myBoatList.addBoat("speedboot", "baba-gooey", "1234");
 
         }
     }
