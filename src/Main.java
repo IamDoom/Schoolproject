@@ -1,5 +1,4 @@
 
-import java.io.*;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -11,6 +10,7 @@ class Part {
     private boolean essential;
     private String description;
     private double discount;
+    private double EcoDiscount;
 
     Part(String name, double price, boolean essential, String description) {
         this.name = name;
@@ -18,6 +18,7 @@ class Part {
         this.essential = essential;
         this.description = description;
         this.discount = 0.0;
+        this.EcoDiscount = 0.0;
     }
     Part(String name, double price, boolean essential) {
         this(name, price, essential, null);
@@ -29,8 +30,8 @@ class Part {
     public String getDescription(){
         return this.description;
     }
-    public void setEcoDiscount(double discount) {
-        this.discount = discount;
+    public void setEcoDiscount(double EcoDiscount) {
+        this.EcoDiscount = EcoDiscount;
     }
     public double getPrice() {
         return this.price ;
@@ -39,13 +40,14 @@ class Part {
         return this.name;
     }
     public double applyDiscount(){
-        double inverted = 100-this.discount;
+        double inverted = 100-this.discount - (this.EcoDiscount);
         return ((inverted/100)*price);
     }
 
     public double getDiscount() {
         return discount;
     }
+    public double getEcoDiscount(){return EcoDiscount;}
 
     public boolean getEssential() {
         return this.essential;
@@ -161,6 +163,8 @@ class PartList extends MaakOp {
         }
         System.out.println("Deze optie is niet beschikbaar!");
     }
+    public void setEcoDiscount(String hull, double newDiscount) {
+    }
 }
 class shell{
     Scanner scanner = new Scanner(System.in);
@@ -195,6 +199,7 @@ class shell{
                 klant.setKlantentype(nieuwKlantentype);
                 scanner.nextLine();
             }
+            default -> System.out.println("kies een geldige optie");
 
         }
         Date date = new Date();
@@ -205,65 +210,42 @@ class shell{
         quote.setQuoteDetails();
         return quote;
     }
+
     public void run(){
         boolean shell = true;
         while(shell) {
             String input = scanner.nextLine().strip();
             switch (input) {
-                case "setup" ->{
-                    quote = createQuote();
-                }
-                case "print" ->{
-                    quote.printQuote();
-                    System.out.println("Geef de naam van het bestand waar de quote word opgeslagen:");
-                    String fileName = scanner.nextLine().strip();
+                case "setup" -> quote = createQuote();
 
-                    // create a new file with the given filename
-                    File file = new File(fileName);
-                    try {
-                        // create a new FileWriter object to write to the file
-                        FileOutputStream fw = new FileOutputStream(file);
-                        PrintWriter pw = new PrintWriter(fw);
-                        // write the quote to the file
-                       pw.println(createQuote());
+                case "print" -> quote.printQuote();
 
-                        // close the FileWriter
-                        pw.close();
+                case "create" -> PartList.createPart();
 
-                        // print a success message
-                        System.out.println("Quote is opgeslagen in " + fileName);
-                    } catch (IOException e) {
-                        // if there was an error writing to the file, print an error message
-                        System.out.println("Error tijdens het schrijven van de quote in " + fileName);
-                    }
-//hij is nog niet af voorlopig showed hij alleen "quote@685f4c2e" ik ben nog opzoek naar een oplossing.
-//ik heb overal geprobeerd en dit leek me het beste plek voor nu om te adden ik ga hem nog verplaatsen maar ik moet eerst nog een betere plek vinden ik bespreek dit donderdag met jullie. ~pratik
-                }
-                case "create" -> {
-                    PartList.createPart();
-                }
-                case "add" -> {     // for adding parts to the ship being built
-                    quote.addPart(PartList.getParts());
-                }
-                case "remove" ->{
-                    quote.RemovePart(PartList.getParts());
-                }
-                case "discount" -> {
-                    PartList.setOptionDiscount();
-                }
-                case "list" -> {
-                    PartList.displayParts();
-                }
+                case "add" -> quote.addPart(PartList.getParts());
+
+                case "remove" -> quote.RemovePart(PartList.getParts());
+
+                case "discount" -> PartList.setOptionDiscount();
+
+                case "list" -> PartList.displayParts();
+
                 case "finalize" ->{
                     System.out.println("finalizing before shutting down");
                     shell = false;
                 }
-                case "exit" -> {
-                    shell = false;
-                }
+                case "exit" -> shell = false;
+
                 case "help" -> {
-                    System.out.println("hier komt een lijst met termen en wellicht een beschrijving");
-            }
+                    System.out.println("<SETUP>    'voor het maken van een offerte'");
+                    System.out.println("<PRINT>    'print de offerte zoals die er op het moment uit ziet'");
+                    System.out.println("<CREATE>   'voor het aanmaken van een onderdeel'");
+                    System.out.println("<ADD>      'voegt een bestaand onderdeel toe'");
+                    System.out.println("<LIST>     'toont een lijst van beschikbare onderdelen'");
+                    System.out.println("<FINALIZE> 'slaat de offerte op en sluit het programma af'");
+                    System.out.println("<EXIT>     'sluit het programma af'");
+                    System.out.println("<DISCOUNT> 'voegt korting toe aan een onderdeel");
+                }
 
                 default -> System.out.println("please use a valid input use 'help' for help");
             }
@@ -275,9 +257,7 @@ class Klant{
     private String naam;
     private Klantentype klantentype;
 
-    public Klant(){
-        setNaam();
-    }
+    public Klant(){setNaam();}
     public Klant(String naam){
         this.naam = naam;
     }
@@ -357,9 +337,19 @@ class NieuwKlantentype extends Klantentype{
     public void setHoeveelheidkorting(double hoeveelheidkorting) {
         super.setHoeveelheidkorting(hoeveelheidkorting);
     }
-
+    public static NieuwKlantentype nieuwklantentype(){ //dit werkt nog niet goed fix ik volgende keer
+        NieuwKlantentype nieuwKlantentype = new NieuwKlantentype("Nieuw", 0.0);
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("wat is de naam van het nieuwe klantentype?");
+        String naamklantentype = scanner.nextLine();
+        nieuwKlantentype.setNaam(naamklantentype);
+        System.out.println("wat is de hoeveelheid korting voor dit klantentype?");
+        double korting = scanner.nextDouble();
+        nieuwKlantentype.setHoeveelheidkorting(korting);
+        return  nieuwKlantentype;
+    }
 }
-abstract class MaakOp{
+class MaakOp{
     DecimalFormat df = new DecimalFormat("#0.00");
     public void tekstOpmaken(String input, String variable){
         System.out.print(input);
@@ -370,6 +360,7 @@ abstract class MaakOp{
 
     }
     public void MaakOpOnderdeel(Part part, String type){
+
         switch(type) {
             case "list" -> {
                 System.out.printf("\t%-17S> %33s\n", part.getName(), ">€" + df.format(part.getPrice()));
@@ -463,17 +454,22 @@ class quote extends MaakOp{
     }
 
     public void addPart(ArrayList<Part> parts){
+        boolean checkOfOnderdeelisToegevoegt = false;
         System.out.print("Welke onderdeel wilt u toevoegen aan de boot? ");
         String optieNaam = scanner.nextLine();
         for(Part part : parts){
             if (part.getName().equalsIgnoreCase(optieNaam)){
                 selectedParts.add(part);
                 System.out.println("onderdeel " + part.getName() + " is succesvol toegevoegd");
+                checkOfOnderdeelisToegevoegt = true;
             }
-
+        }
+        if(!checkOfOnderdeelisToegevoegt){
+            System.out.println("er zijn geen onderdelen met de naam " + optieNaam + " gevonden");
         }
     }
     public void RemovePart(ArrayList<Part> parts){
+        boolean checkOfOnderdeelisToegevoegt = false;
         System.out.print("Welke onderdeel wilt u verwijderen? ");
         String optieNaam = scanner.nextLine();
         for(Part part : parts){
@@ -481,7 +477,9 @@ class quote extends MaakOp{
                 selectedParts.remove(part);
                 System.out.println("onderdeel " + part.getName() + " is succesvol verwijderd");
             }
-
+        }
+        if(!checkOfOnderdeelisToegevoegt){
+            System.out.println("er zijn geen onderdelen met de naam " + optieNaam + " gevonden");
         }
     }
 
@@ -513,14 +511,27 @@ class quote extends MaakOp{
     }
 }
 
-class boatList{
+class boatList {
+    private ArrayList<boat> boats;
+
+    public boatList() {boats = new ArrayList<>();}
+
+    public void addBoat(String type, String name, String serialNumber) {
+        boat newBoat = new boat();
+        newBoat.setType(type);
+        newBoat.setName(name);
+        newBoat.setSerialNumber(serialNumber);
+        boats.add(newBoat);
+    }
+    public ArrayList<boat> getBoats(){return boats;}
 }
+
 
 class boat{
     private String type;
     private String name;
     private String serialNumber;
-    private String customerType;
+
     private ArrayList<Part> parts;
 
     public String getType() {
@@ -546,9 +557,8 @@ class boat{
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
-    public void setCustomerType(String customerType) {
-        this.customerType = customerType;
-    }
+
+
 
 }
 
@@ -561,6 +571,8 @@ public class Main {
     public static void main(String[] args) {
         shell shell = new shell();
         shell.run();
+        boatList myBoatList = new boatList();
+        myBoatList.addBoat("speedboot", "baba-gooey", "1234");
 
         }
     }
