@@ -1,4 +1,4 @@
-
+import java.io.*;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -30,8 +30,8 @@ class Part {
     public String getDescription(){
         return this.description;
     }
-    public void setEcoDiscount(double EcoDiscount) {
-        this.EcoDiscount = EcoDiscount;
+    public void setEcoDiscount(double discount) {
+        this.discount = discount;
     }
     public double getPrice() {
         return this.price ;
@@ -162,8 +162,6 @@ class PartList extends MaakOp {
             }
         }
         System.out.println("Deze optie is niet beschikbaar!");
-    }
-    public void setEcoDiscount(String hull, double newDiscount) {
     }
 }
 class shell{
@@ -349,7 +347,7 @@ class NieuwKlantentype extends Klantentype{
         return  nieuwKlantentype;
     }
 }
-class MaakOp{
+abstract class MaakOp{
     DecimalFormat df = new DecimalFormat("#0.00");
     public void tekstOpmaken(String input, String variable){
         System.out.print(input);
@@ -360,7 +358,6 @@ class MaakOp{
 
     }
     public void MaakOpOnderdeel(Part part, String type){
-
         switch(type) {
             case "list" -> {
                 System.out.printf("\t%-17S> %33s\n", part.getName(), ">€" + df.format(part.getPrice()));
@@ -378,7 +375,7 @@ class quote extends MaakOp{
     private Klant klant;
     private Date date;
     private String orderNumber;
-    private boat boat;
+    private Boat boat;
     private double bootPrijs;
     private double btwPercentage;
     private double transportKosten;
@@ -407,6 +404,9 @@ class quote extends MaakOp{
     public double calculateTotal(){
         double vatAmount = this.bootPrijs*this.btwPercentage/100;
         this.totaalprijs = bootPrijs+vatAmount+this.transportKosten;
+        for(Part part: selectedParts){
+            this.totaalprijs +=part.getPrice();
+        }
         return this.totaalprijs;
     }
     public OnthoudenVanNumbers calculateTotalOfParts(){ //je kunt dit gebruiken als berekening van de prijs van de onderdelen
@@ -454,34 +454,42 @@ class quote extends MaakOp{
     }
 
     public void addPart(ArrayList<Part> parts){
-        boolean checkOfOnderdeelisToegevoegt = false;
         System.out.print("Welke onderdeel wilt u toevoegen aan de boot? ");
         String optieNaam = scanner.nextLine();
-        for(Part part : parts){
-            if (part.getName().equalsIgnoreCase(optieNaam)){
+        Part part = Searchpart(optieNaam, parts);
+            if(part != null) {
                 selectedParts.add(part);
-                System.out.println("onderdeel " + part.getName() + " is succesvol toegevoegd");
-                checkOfOnderdeelisToegevoegt = true;
+                System.out.println("onderdeel '" + part.getName() + "' is succesvol toegevoegd");
+            }else{
+                System.out.println("er is geen onderdeel met de naam '" + optieNaam + "' gevonden");
             }
-        }
-        if(!checkOfOnderdeelisToegevoegt){
-            System.out.println("er zijn geen onderdelen met de naam " + optieNaam + " gevonden");
-        }
-    }
+
+            }
+
+
+
     public void RemovePart(ArrayList<Part> parts){
-        boolean checkOfOnderdeelisToegevoegt = false;
         System.out.print("Welke onderdeel wilt u verwijderen? ");
         String optieNaam = scanner.nextLine();
-        for(Part part : parts){
-            if (part.getName().equalsIgnoreCase(optieNaam)){
-                selectedParts.remove(part);
-                System.out.println("onderdeel " + part.getName() + " is succesvol verwijderd");
-            }
-        }
-        if(!checkOfOnderdeelisToegevoegt){
-            System.out.println("er zijn geen onderdelen met de naam " + optieNaam + " gevonden");
+        Part part = Searchpart(optieNaam, parts);
+        if(part != null) {
+            selectedParts.remove(part);
+            System.out.println("onderdeel '" + part.getName() + "' is succesvol verwijdert");
+        }else{
+            System.out.println("er is geen onderdeel met de naam '" + optieNaam + "' gevonden");
         }
     }
+
+
+    public Part Searchpart(String input, ArrayList<Part> parts){
+        for (Part part: parts) {
+            if (part.getName().equalsIgnoreCase(input)) {
+                return part;
+            }
+        }
+         return null;
+        }
+
 
     public Klant getKlant() {
         return klant;
@@ -503,37 +511,43 @@ class quote extends MaakOp{
     public void setOrderNumber(String orderNumber) {
         this.orderNumber = orderNumber;
     }
-    public boat getBoat() {
-        return boat;
+    public Boat getBoat() {
+        return this.boat;
     }
-    public void setBoat(boat boat) {
+    public void setBoat(Boat boat) {
         this.boat = boat;
     }
 }
 
 class boatList {
-    private ArrayList<boat> boats;
+    Scanner scanner = new Scanner(System.in);
+    public ArrayList<Boat> boats;
 
-    public boatList() {boats = new ArrayList<>();}
-
-    public void addBoat(String type, String name, String serialNumber) {
-        boat newBoat = new boat();
-        newBoat.setType(type);
-        newBoat.setName(name);
-        newBoat.setSerialNumber(serialNumber);
-        boats.add(newBoat);
+    public void addBoat() {
+        System.out.println("wat voor type boot is het? ");
+        String type = scanner.nextLine();
+        System.out.println("wat is de naam van de boot? ");
+        String name = scanner.nextLine();
+        System.out.println("wat is het serienummer? ");
+        String serialnumber = scanner.nextLine();
+        Boat boat = new Boat(type,name,serialnumber);
+        boats.add(boat);
     }
-    public ArrayList<boat> getBoats(){return boats;}
+
 }
 
-
-class boat{
+class Boat{
     private String type;
     private String name;
     private String serialNumber;
+    private double totalprice;
 
-    private ArrayList<Part> parts;
 
+    Boat(String type, String name, String serialNumber){
+        this.type = type;
+        this.name = name;
+        this.serialNumber = serialNumber;
+    }
     public String getType() {
         return type;
     }
@@ -571,8 +585,6 @@ public class Main {
     public static void main(String[] args) {
         shell shell = new shell();
         shell.run();
-        boatList myBoatList = new boatList();
-        myBoatList.addBoat("speedboot", "baba-gooey", "1234");
 
         }
     }
