@@ -1,5 +1,4 @@
 
-import java.io.*;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -249,9 +248,7 @@ class Klant{
     private String naam;
     private Klantentype klantentype;
 
-    public Klant(){
-        setNaam();
-    }
+    public Klant(){setNaam();}
     public Klant(String naam){
         this.naam = naam;
     }
@@ -332,7 +329,7 @@ class NieuwKlantentype extends Klantentype{
         super.setHoeveelheidkorting(hoeveelheidkorting);
     }
     public static NieuwKlantentype nieuwklantentype(){ //dit werkt nog niet goed fix ik volgende keer
-        NieuwKlantentype nieuwKlantentype = new NieuwKlantentype("Nieuw");
+        NieuwKlantentype nieuwKlantentype = new NieuwKlantentype("Nieuw", 0.0);
         Scanner scanner = new Scanner(System.in);
         System.out.println("wat is de naam van het nieuwe klantentype?");
         String naamklantentype = scanner.nextLine();
