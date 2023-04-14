@@ -185,6 +185,7 @@ class PartList extends MaakOp {
 class shell{
     Scanner scanner = new Scanner(System.in);
     PartList PartList = new PartList();
+    boatList boatList = new boatList();
     quote quote = new quote();
     private Boat boat;
 
@@ -206,8 +207,16 @@ class shell{
                         System.out.println("u moet eerst een offerte maken om te printen");
                     }
                 }
-                case "create" -> PartList.createPart();
-
+                case "create" -> {
+                    System.out.println("wat wilt u maken?");
+                    input = scanner.nextLine();
+                    switch (input.toLowerCase()){
+                        case "onderdeel" -> PartList.createPart();
+                        case "boot" -> boatList.createBoat();
+                        case "exit"->{break;}
+                        default -> System.out.println("<onderdeel><boot><exit>");
+                    }
+                }
                 case "add" -> {
                     boat = quote.getBoat();
                     boat.addPart(PartList.getParts());
@@ -526,7 +535,7 @@ abstract class MaakOp{
 
 class boatList {
     Scanner scanner = new Scanner(System.in);
-    public ArrayList<Boat> boats = new ArrayList<>();
+    public static ArrayList<Boat> boats = new ArrayList<>();
 
     Boat brabus = new Boat("speedboat","brabus" ,"qpjwswu2", 100001.0001 );
     Boat lamboat = new Boat("speedboat", "lamboat", "w1qrz6",250000.0002);
