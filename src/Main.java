@@ -157,9 +157,7 @@ class PartList extends MaakOp {
 class shell{
     Scanner scanner = new Scanner(System.in);
     PartList PartList = new PartList();
-    boatList boatList = new boatList();
     quote quote = new quote();
-    private Boat boat;
 
 
     public void run(){
@@ -169,17 +167,12 @@ class shell{
             switch (input.toLowerCase()) {
                 case "offerte" ->{
                     quote = quote.createQuote();
-                    quote.setOrderNumber();
-                    quote.PickCustomer();
-                    quote.setBtwPercentage();
-                    boat = quote.Pickboat();
-                    quote.setBoat(boat);
+                    quote.setquoteDetails();
+                    quote.setBoat(quote.Pickboat());
                 }
 
                 case "print" -> {
                     if(quote.getKlant() != null) {
-                        boat = quote.Pickboat();
-                        quote.setBoat(boat);
                         quote.calculateTotalOfParts();
                         quote.printQuote();
                     }else{
@@ -191,24 +184,23 @@ class shell{
                     input = scanner.nextLine();
                     switch (input.toLowerCase()){
                         case "onderdeel" -> PartList.createPart();
-                        case "boot" -> boatList.createBoat();
+                        //case "boot" -> boatList.createBoat();
                         case "exit"->{break;}
                         default -> System.out.println("<onderdeel><boot><exit>");
                     }
                 }
                 case "add" -> {
-                    boat = quote.getBoat();
-                    if(boat != null) {
-                        boat.addPart(PartList.getParts());
+                    if(quote.getBoat() != null) {
+                        quote.getBoat().addPart(PartList.getParts());
                     }else {
                         System.out.println("kies eerst een boot");
-                        boat = quote.Pickboat();
+                        quote.setBoat(quote.Pickboat());
                     }
                 }
                 case "remove" ->{
-                    if(boat != null){
-                        if(boat.selectedParts.size() > 0 ){
-                            boat.RemovePart(PartList.getParts());
+                    if(quote.getBoat() != null){
+                        if(quote.getBoat().selectedParts.size() > 0 ){
+                            quote.getBoat().RemovePart(quote.getBoat().selectedParts);
                         }else{
                             System.out.println("u heeft geen onderdelen om te verwijderen");
                         }
@@ -217,7 +209,7 @@ class shell{
                     }
                 }
 
-                case "boot" -> boat = quote.Pickboat();
+                case "boot" ->  quote.setBoat(quote.Pickboat());
 
                 case "list" -> PartList.displayParts();
 
@@ -299,6 +291,11 @@ class quote extends MaakOp{
         quote newquote = new quote(klant, date);
         return newquote;
     }
+    public void setquoteDetails(){
+        setOrderNumber();
+        PickCustomer();
+        setBtwPercentage();
+    }
     public void setBtwPercentage(){
         System.out.println("wat wordt het  btw percentage voor deze klant?");
         this.btwPercentage = scanner.nextDouble();
@@ -351,7 +348,7 @@ class quote extends MaakOp{
     public Boat Pickboat(){
         boatList.displayBoats();
         System.out.println("welke boot(naam) wilt u?");
-        String Name = scanner.nextLine();
+        String Name = scanner.nextLine().strip();
         return boatList.selectBoat(Name);
     }
 
