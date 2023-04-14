@@ -9,7 +9,7 @@ class Part {
     private double price;
     private boolean essential;
     private String description;
-    private double discount;
+
     private double EcoDiscount;
 
     Part(){}
@@ -19,7 +19,7 @@ class Part {
         this.price = price;
         this.essential = essential;
         this.description = description;
-        this.discount = 0.0;
+
         this.EcoDiscount = 0.0;
     }
     Part(String name, double price, boolean essential) {
@@ -32,8 +32,8 @@ class Part {
     public String getDescription(){
         return this.description;
     }
-    public void setEcoDiscount(double discount) {
-        this.discount = discount;
+    public void setEcoDiscount(double Ecodiscount) {
+        this.EcoDiscount = Ecodiscount;
     }
     public double getPrice() {
         return this.price ;
@@ -42,13 +42,10 @@ class Part {
         return this.name;
     }
     public double applyDiscount(){
-        double inverted = 100-this.discount - (this.EcoDiscount);
+        double inverted = 100-this.EcoDiscount;
         return ((inverted/100)*price);
     }
 
-    public double getDiscount() {
-        return discount;
-    }
     public double getEcoDiscount(){return EcoDiscount;}
 
     public boolean getEssential() {
@@ -394,8 +391,8 @@ class quote extends MaakOp{
         double korting;
         for(Part selectedpart : boat.selectedParts) {
             totaalzonderkorting += selectedpart.getPrice();
-            if (selectedpart.getDiscount() != 0) {
-                totaalmetkorting += selectedpart.getPrice() -(selectedpart.getPrice() * selectedpart.getDiscount());
+            if (selectedpart.getEcoDiscount() != 0) {
+                totaalmetkorting += selectedpart.getPrice() -(selectedpart.getPrice() * selectedpart.getEcoDiscount());
 
             }
             else{
