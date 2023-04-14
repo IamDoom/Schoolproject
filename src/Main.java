@@ -355,6 +355,8 @@ class quote extends MaakOp{
 
     public void printQuote(){
         OnthoudenVanNumbers onthoudenVanNumbers = this.calculateTotalOfParts();
+        double totaalprijs = (this.calculateTotal() + onthoudenVanNumbers.totaalmetkorting()) * ((100 - klant.getKlantentype().getKorting()) / 100);
+
         System.out.println("de volgende offerte is een simpele opmaak voor een boot");
         System.out.println("dit is niet per se een definitieve versie\n");
         System.out.println("informatie van de klant");
@@ -383,7 +385,7 @@ class quote extends MaakOp{
         PrijzenOpmaken("Totale kosten onderdelen met korting:", onthoudenVanNumbers.totaalmetkorting());
         PrijzenOpmaken("Totale hoeveelheid korting:", onthoudenVanNumbers.korting());
         PrijzenOpmaken("BTW (" + this.btwPercentage + "%):" , (boat.getBasePrice() * this.btwPercentage / 100));
-        PrijzenOpmaken("Totale prijs:" , this.calculateTotal());
+        PrijzenOpmaken("Totale prijs:" , totaalprijs);
     }
     public double calculateTotal(){
         double vatAmount = boat.totalPrice()*this.btwPercentage/100;
