@@ -214,32 +214,38 @@ class shell{
                 case "list" -> PartList.displayParts();
 
                 case "select" -> {
+                    boolean selection = true;
                     System.out.println("welk onderdeel wilt u selecteren?");
-                    input = scanner.nextLine();
-                    Part part = PartList.getPart(input);
-                    if(part == null){
-                        System.out.println("'"+input+"' bestaat niet.");
-                    }else{
-                        System.out.println("wat wilt u met '"+input+"' doen?");
+                    while (selection) {
                         input = scanner.nextLine();
-
-                        switch(input){
-                            case "korting" -> {
-                                System.out.println("geef de gewenste kortings percentage");
-                                part.setEcoDiscount(scanner.nextDouble());
-                            }
-                            case "beschrijving" -> {
-                                if(part.getDescription() == null){
-                                    System.out.println("er is geen beschrijving beschikbaar");
-                                }else{
-                                    System.out.println(part.getDescription());
+                        Part part = PartList.getPart(input);
+                        if (input.equalsIgnoreCase("exit")) {
+                            System.out.println("u verlaat nu het onderdelen selectie process");
+                            selection = false;
+                        } else if(part == null) {
+                            System.out.println("'" + input + "' bestaat niet.");
+                            }else{
+                            System.out.println("wat wilt u met '" + input + "' doen?");
+                            input = scanner.nextLine();
+                                switch (input) {
+                                    case "korting" -> {
+                                        System.out.println("geef de gewenste kortings percentage");
+                                        part.setEcoDiscount(scanner.nextDouble());
+                                        scanner.nextLine().strip();
+                                        selection = false;
+                                    }
+                                    case "beschrijving" -> {
+                                        if (part.getDescription() == null) {
+                                            System.out.println("er is geen beschrijving beschikbaar");
+                                        } else {
+                                            System.out.println(part.getDescription());
+                                        }
+                                    }
+                                    case "vernietig" -> PartList.deletePart(part);
                                 }
                             }
-                            case "vernietig" -> PartList.deletePart(part);
-                        }
                     }
                 }
-
                 case "finalize" ->{
                     System.out.println("finalizing before shutting down");
                     quote.printQuote();
@@ -309,42 +315,41 @@ class quote extends MaakOp{
 
 
     public void PickCustomer() {
+        boolean run = true;
         System.out.println("voor welk klantentype wilt u een offerte maken?");
         System.out.println("'bedrijf' 'overheid' 'particulier' 'nieuw' (nieuw klantentype)");
-        String klantentype = scanner.nextLine().strip();
-
-        boolean ValidInput = false;
-        while(!ValidInput) {
-            if (klantentype.equalsIgnoreCase("BEDRIJF")) {
-                Bedrijf bedrijf = new Bedrijf("Bedrijf");
-                klant.setKlantentype(bedrijf);
-                ValidInput = true;
-            }
-            else if (klantentype.equalsIgnoreCase("OVERHEID")) {
-                Overheid overheid = new Overheid("Overheid");
-                klant.setKlantentype(overheid);
-                ValidInput = true;
-            }
-            else if (klantentype.equalsIgnoreCase("PARTICULIER")) {
-                Particulier particulier = new Particulier("Particulier");
-                klant.setKlantentype(particulier);
-                ValidInput = true;
-            }
-            else if (klantentype.equalsIgnoreCase("NIEUW")) {
-                System.out.println("wat is de naam van het nieuwe klantentype?");
-                String naamklantentype = scanner.nextLine();
-                System.out.println("wat is de hoeveelheid korting voor dit klantentype?");
-                double korting = scanner.nextDouble();
-                NieuwKlantentype nieuwKlantentype = new NieuwKlantentype(naamklantentype, korting);
-                klant.setKlantentype(nieuwKlantentype);
-                scanner.nextLine();
-                ValidInput = true;
-            }
-            else {
-                System.out.println("kies een geldige optie\n'bedrijf' 'overheid' 'particulier' 'nieuw'");
-                break;
+        while(run) {
+            String input = scanner.nextLine().strip();
+            switch(input.toLowerCase()){
+                case "bedrijf" ->{
+                    Bedrijf bedrijf = new Bedrijf("Bedrijf");
+                    klant.setKlantentype(bedrijf);
+                    run = false;
+                }
+                case "overheid" ->{
+                    Overheid overheid = new Overheid("Overheid");
+                    klant.setKlantentype(overheid);
+                    run = false;
+                }
+                case "particulier" ->{
+                    Particulier particulier = new Particulier("Particulier");
+                    klant.setKlantentype(particulier);
+                    run = false;
+                }
+                case "nieuw" ->{
+                    System.out.println("wat is de naam van het nieuwe klantentype?");
+                    String naamklantentype = scanner.nextLine();
+                    System.out.println("wat is de hoeveelheid korting voor dit klantentype?");
+                    double korting = scanner.nextDouble();
+                    scanner.nextLine().strip();
+                    NieuwKlantentype nieuwKlantentype = new NieuwKlantentype(naamklantentype, korting);
+                    klant.setKlantentype(nieuwKlantentype);
+                    run = false;
+                }
+                default ->System.out.println("kies een geldige optie\n'bedrijf' 'overheid' 'particulier' 'nieuw'");
             }
         }
+
     }
     public Boat Pickboat(){
         boolean select = true;
