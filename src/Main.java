@@ -111,6 +111,19 @@ class PartList extends MaakOp {
         Parts.add(option);
     }
 
+    public void deletePart(){
+        System.out.print("welk onderdeel wilt u vernietigen?:");
+        String name = scanner.nextLine().strip();
+        for(Part part: Parts){
+            if (name == part.getName()) {
+                Parts.remove(part);
+            }else{
+                System.out.println("onderdeel niet gevonden");
+            }
+
+        }
+    }
+
     public void displayParts() {
         System.out.println("essentiële opties:");
         for(Part part: Parts)
@@ -165,6 +178,9 @@ class PartList extends MaakOp {
         }
         System.out.println("Deze optie is niet beschikbaar!");
     }
+    public void selectPart(){
+
+    }
 }
 class shell{
     Scanner scanner = new Scanner(System.in);
@@ -197,10 +213,13 @@ class shell{
 
                 case "list" -> PartList.displayParts();
 
-                //case "edit" -> ;
+                case "destroy" -> PartList.deletePart();
+
+                case "select" -> PartList.selectPart();
 
                 case "finalize" ->{
                     System.out.println("finalizing before shutting down");
+                    quote.printQuote();
                     shell = false;
                 }
                 case "exit" -> shell = false;
@@ -214,6 +233,8 @@ class shell{
                     System.out.println("<FINALIZE> 'slaat de offerte op en sluit het programma af'");
                     System.out.println("<EXIT>     'sluit het programma af'");
                     System.out.println("<DISCOUNT> 'voegt korting toe aan een onderdeel");
+                    System.out.println("<DESTROY>  'vernietigd een beschikbaar onderdeel'");
+                    System.out.println("<SELECT>   'selecteerd een specifiek onderdeel'");
                 }
 
                 default -> System.out.println("please use a valid input use 'help' for help");
