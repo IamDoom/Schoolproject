@@ -299,6 +299,7 @@ class quote extends MaakOp{
     public void setBtwPercentage(){
         System.out.println("wat wordt het  btw percentage voor deze klant?");
         this.btwPercentage = scanner.nextDouble();
+        scanner.nextLine().strip();
     }
 
     public void setTransportKosten(){
@@ -346,10 +347,19 @@ class quote extends MaakOp{
         }
     }
     public Boat Pickboat(){
+        boolean select = true;
         boatList.displayBoats();
         System.out.println("welke boot(naam) wilt u?");
-        String Name = scanner.nextLine().strip();
-        return boatList.selectBoat(Name);
+        while(select) {
+            String Name = scanner.nextLine().strip();
+            if(Name.equalsIgnoreCase("exit")){
+                break;
+            }else if(boatList.selectBoat(Name)==null){
+               System.out.println("boot bestaat niet");
+            }else{return boatList.selectBoat(Name);}
+        }
+        System.out.println("u verlaat de selectie ZONDER boot!");
+        return null;
     }
 
 
