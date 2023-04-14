@@ -291,6 +291,7 @@ class shell{
                     System.out.println("<FINALIZE> 'slaat de offerte op en sluit het programma af'");
                     System.out.println("<EXIT>     'sluit het programma af'");
                     System.out.println("<SELECT>   'selecteerd een specifiek onderdeel'");
+                    System.out.println("<BOOT>     'geeft optie om boot te selecteren'");
                 }
 
                 default -> System.out.println("please use a valid input use 'help' for help");
