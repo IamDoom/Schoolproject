@@ -395,7 +395,7 @@ class quote extends MaakOp{
 
     public void printQuote(){
         OnthoudenVanNumbers onthoudenVanNumbers = this.calculateTotalOfParts();
-        double totaalprijs = (this.calculateTotal() + onthoudenVanNumbers.totaalmetkorting()) * ((100 - klant.getKlantentype().getKorting()) / 100);
+        double totaalprijs = this.calculateTotal() * ((100 - klant.getKlantentype().getKorting()) / 100);
 
         System.out.println("de volgende offerte is een simpele opmaak voor een boot");
         System.out.println("dit is niet per se een definitieve versie\n");
@@ -440,20 +440,10 @@ class quote extends MaakOp{
         double korting;
         for(Part selectedpart : boat.selectedParts) {
             totaalzonderkorting += selectedpart.getPrice();
-            if (selectedpart.getEcoDiscount() != 0) {
-                totaalmetkorting += selectedpart.getPrice() -(selectedpart.getPrice() * selectedpart.getEcoDiscount());
-
-            }
-            else{
-                totaalmetkorting += selectedpart.getPrice();
-
-            }
-
+            totaalmetkorting += selectedpart.getPrice() * ((100-selectedpart.getEcoDiscount())/100);
         }
         korting = totaalzonderkorting - totaalmetkorting;
-        OnthoudenVanNumbers onthoudenVanNumbers = new OnthoudenVanNumbers(totaalzonderkorting, totaalmetkorting, korting);
-        return onthoudenVanNumbers;
-
+        return new OnthoudenVanNumbers(totaalzonderkorting, totaalmetkorting, korting);
     }
     public Klant getKlant() {
         return klant;
@@ -757,13 +747,11 @@ class Boat{
         double totalprice =this.basePrice;
         if(this.selectedParts != null) {
             for (Part part : selectedParts) {
-                totalprice += part.getPrice();
+                totalprice += (part.getPrice() *((100-part.getEcoDiscount())/100));
             }
         }
         return totalprice;
     }
-
-
 }
 
 record OnthoudenVanNumbers(double totaalzonderkorting, double totaalmetkorting, double korting) {
