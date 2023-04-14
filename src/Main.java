@@ -344,7 +344,7 @@ class quote extends MaakOp{
     }
     public Boat Pickboat(){
         boatList.displayBoats();
-        System.out.println("welke boot wilt u?");
+        System.out.println("welke boot(naam) wilt u?");
         String Name = scanner.nextLine();
         return boatList.selectBoat(Name);
     }
@@ -373,8 +373,9 @@ class quote extends MaakOp{
             }
         }else{tekstOpmaken("onderdelen:", "<niets geselecteerd>");}
         PrijzenOpmaken("Transport kosten:" , this.transportKosten);
+        System.out.println();
 
-        PrijzenOpmaken("\nTotale kosten onderdelen:", onthoudenVanNumbers.totaalzonderkorting());
+        PrijzenOpmaken("Totale kosten onderdelen:", onthoudenVanNumbers.totaalzonderkorting());
         PrijzenOpmaken("Totale kosten onderdelen met korting:", onthoudenVanNumbers.totaalmetkorting());
         PrijzenOpmaken("Totale hoeveelheid korting:", onthoudenVanNumbers.korting());
         PrijzenOpmaken("BTW (" + this.btwPercentage + "%):" , (boat.getBasePrice() * this.btwPercentage / 100));
@@ -517,10 +518,6 @@ class NieuwKlantentype extends Klantentype{
     NieuwKlantentype(String naam, double hoeveelheidkorting){
         super(naam, hoeveelheidkorting);
     }
-    @Override
-    public void setHoeveelheidkorting(double hoeveelheidkorting) {
-        super.setHoeveelheidkorting(hoeveelheidkorting);
-    }
     public static NieuwKlantentype nieuwklantentype(){ //dit werkt nog niet goed fix ik volgende keer
         NieuwKlantentype nieuwKlantentype = new NieuwKlantentype("Nieuw", 0.0);
         Scanner scanner = new Scanner(System.in);
@@ -552,6 +549,9 @@ abstract class MaakOp{
                 System.out.printf("%-20S %5s %15s\n",part.getName(),"(essentieel)","prijs: "+df.format(part.getPrice()));
             }
         }
+    }
+    public void MaakOpBoot(Boat boat){
+        System.out.printf("Type: %-17S Naam: %-15s startprijs: %10s\n", boat.getType(),boat.getName(),"€"+boat.getBasePrice());
     }
 
 }
@@ -587,7 +587,8 @@ class boatList extends MaakOp{
     public void displayBoats(){
         System.out.println("huidig beschikbare boten: ");
         for(Boat boat: boats){
-            System.out.println(boat.getName());
+            MaakOpBoot(boat);
+
         }
     }
 
