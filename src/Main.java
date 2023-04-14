@@ -181,7 +181,7 @@ class shell{
                 }
                 case "create" -> {
                     boolean run = true;
-                    System.out.println("wat wilt u maken?\n<onderdeel><boot><exit>");
+                    System.out.println("wat wilt u aanmaken?\n<onderdeel><boot><exit>");
                     while (run) {
                         input = scanner.nextLine();
                         switch (input.toLowerCase()) {
@@ -244,7 +244,7 @@ class shell{
                                     case "korting" -> {
                                         System.out.println("geef de gewenste kortings percentage");
                                         part.setEcoDiscount(scanner.nextDouble());
-                                        scanner.nextLine().strip();
+                                        scanner.nextLine();
                                         System.out.println("het onderdeel " + part.getName() + " heeft nu " + part.getEcoDiscount() + "% korting");
                                         selection = false;
                                         subselect = false;
@@ -320,8 +320,7 @@ class quote extends MaakOp{
     public static quote createQuote() {
         Klant klant = new Klant();
         Date date = new Date();
-        quote newquote = new quote(klant, date);
-        return newquote;
+        return new quote(klant, date);
     }
     public void setquoteDetails(){
         setOrderNumber();
@@ -331,7 +330,7 @@ class quote extends MaakOp{
     public void setBtwPercentage(){
         System.out.println("wat wordt het  btw percentage voor deze klant?");
         this.btwPercentage = scanner.nextDouble();
-        scanner.nextLine().strip();
+        scanner.nextLine();
     }
 
     public void setTransportKosten(){
