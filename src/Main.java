@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.text.DecimalFormat;
 
 class Part {
+    Scanner scanner = new Scanner(System.in);
     private String name;
     private double price;
     private boolean essential;
@@ -148,33 +149,13 @@ class PartList extends MaakOp {
             }
         }
     }
-    public void setOptionDiscount() {
-        System.out.print("Welke optie krijgt een nieuwe milieukorting?");
-        String name = scanner.nextLine().strip();
-        for (Part part : Parts) {
-            if (part.getName().equalsIgnoreCase(name)) {
-                System.out.print("Voer het nieuwe percentage in: ");
-                double discount = scanner.nextDouble();
-                scanner.nextLine();
-                part.setEcoDiscount(discount);
-                System.out.println("Milieukorting veranderd!");
-                return;
+    public Part getPart(String name){
+        for(Part part: Parts){
+            if(part.getName().equalsIgnoreCase(name)){
+                return part;
             }
         }
-        for (Part part : Parts) {
-            if (part.getName().equalsIgnoreCase(name)) {
-                System.out.print("Voer het nieuwe percentage in: ");
-                double ecoDiscount = scanner.nextDouble();
-                scanner.nextLine();
-                part.setEcoDiscount(ecoDiscount);
-                System.out.println("Milieukorting veranderd!");
-                return;
-            }
-        }
-        System.out.println("Deze optie is niet beschikbaar!");
-    }
-    public void selectPart(){
-
+        return null;
     }
 }
 class shell{
@@ -238,13 +219,35 @@ class shell{
 
                 case "boot" -> boat = quote.Pickboat();
 
-                case "discount" -> PartList.setOptionDiscount();
-
                 case "list" -> PartList.displayParts();
 
                 case "destroy" -> PartList.deletePart();
 
-                case "select" -> PartList.selectPart();
+                case "select" -> {
+                    System.out.println("welk onderdeel wilt u selecteren?");
+                    input = scanner.nextLine();
+                    Part part = PartList.getPart(input);
+                    if(part == null){
+                        System.out.println("'"+input+"' bestaat niet.");
+                    }else{
+                        System.out.println("wat wilt u met '"+input+"' doen?");
+                        input = scanner.nextLine();
+                        switch(input){
+                            case "korting" -> {
+                                System.out.println("geef de gewenste kortings percentage");
+                                part.setEcoDiscount(scanner.nextDouble());
+                            }
+                            case "beschrijving" -> {
+                                if(part.getDescription() == null){
+                                    System.out.println("er is geen beschrijving beschikbaar");
+                                }else{
+                                    System.out.println(part.getDescription());
+                                }
+                            }
+
+                        }
+                    }
+                }
 
                 case "finalize" ->{
                     System.out.println("finalizing before shutting down");
