@@ -9,7 +9,6 @@ class Part {
     private double price;
     private boolean essential;
     private String description;
-
     private double EcoDiscount;
 
     Part(){}
@@ -19,7 +18,6 @@ class Part {
         this.price = price;
         this.essential = essential;
         this.description = description;
-
         this.EcoDiscount = 0.0;
     }
     Part(String name, double price, boolean essential) {
