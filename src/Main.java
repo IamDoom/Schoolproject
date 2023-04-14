@@ -224,15 +224,18 @@ class shell{
                             selection = false;
                         } else if(part == null) {
                             System.out.println("'" + input + "' bestaat niet.");
-                            }else{
+                            }else {
+                            boolean subselect = true;
                             System.out.println("wat wilt u met '" + input + "' doen?");
-                            input = scanner.nextLine();
+                            while (subselect) {
+                                input = scanner.nextLine();
                                 switch (input) {
                                     case "korting" -> {
                                         System.out.println("geef de gewenste kortings percentage");
                                         part.setEcoDiscount(scanner.nextDouble());
                                         scanner.nextLine().strip();
                                         selection = false;
+                                        subselect = false;
                                     }
                                     case "beschrijving" -> {
                                         if (part.getDescription() == null) {
@@ -242,8 +245,17 @@ class shell{
                                         }
                                     }
                                     case "vernietig" -> PartList.deletePart(part);
+                                    case "exit" -> selection = false;
+                                    case "help" -> {
+                                        System.out.println("<KORTING>      'plaats korting naar keuze op geselecteerd onderdeel'");
+                                        System.out.println("<BESCHRIJVING> 'toont beschrijving onderdeel indien mogelijk'");
+                                        System.out.println("<VERNIETIG>    'verwijdert de onderdeel'");
+                                        System.out.println("<EXIT>         'verlaat het selectie process'");
+                                    }
+                                    default -> System.out.println("ongeldige input 'help' voor hulp");
                                 }
                             }
+                        }
                     }
                 }
                 case "finalize" ->{
