@@ -189,7 +189,10 @@ class shell{
                                 PartList.createPart();
                                 run = false;
                             }
-                            //case "boot" -> boatList.createBoat();
+                            case "boot" -> {
+                                quote.boatList.createBoat();
+                                run = false;
+                            }
                             case "exit" -> {
                                 run = false;
                             }
@@ -278,10 +281,11 @@ class shell{
                 case "exit" -> shell = false;
 
                 case "help" -> {
-                    System.out.println("<OFFERTE>    'voor het maken van een offerte'");
+                    System.out.println("<OFFERTE>  'voor het maken van een offerte'");
                     System.out.println("<PRINT>    'print de offerte zoals die er op het moment uit ziet'");
                     System.out.println("<CREATE>   'voor het aanmaken van een onderdeel'");
                     System.out.println("<ADD>      'voegt een bestaand onderdeel toe'");
+                    System.out.println("<REMOVE>   'verwijdert onderdeel van de boot'");
                     System.out.println("<LIST>     'toont een lijst van beschikbare onderdelen'");
                     System.out.println("<FINALIZE> 'slaat de offerte op en sluit het programma af'");
                     System.out.println("<EXIT>     'sluit het programma af'");
@@ -297,7 +301,6 @@ class shell{
 class quote extends MaakOp{
     Scanner scanner = new Scanner(System.in);
     boatList boatList = new boatList();
-    PartList partList = new PartList();
     private Klant klant;
     private Date date;
     private String orderNumber;
@@ -333,6 +336,7 @@ class quote extends MaakOp{
     public void setTransportKosten(){
         System.out.println("wat worden de transport kosten?");
         this.transportKosten = scanner.nextDouble();
+        scanner.nextLine();
     }
 
 
@@ -363,7 +367,7 @@ class quote extends MaakOp{
                     String naamklantentype = scanner.nextLine();
                     System.out.println("wat is de hoeveelheid korting voor dit klantentype?");
                     double korting = scanner.nextDouble();
-                    scanner.nextLine().strip();
+                    scanner.nextLine();
                     NieuwKlantentype nieuwKlantentype = new NieuwKlantentype(naamklantentype, korting);
                     klant.setKlantentype(nieuwKlantentype);
                     run = false;
@@ -374,10 +378,9 @@ class quote extends MaakOp{
 
     }
     public Boat Pickboat(){
-        boolean select = true;
         boatList.displayBoats();
         System.out.println("welke boot(naam) wilt u?");
-        while(select) {
+        while(true) {
             String Name = scanner.nextLine().strip();
             if(Name.equalsIgnoreCase("exit")){
                 break;
