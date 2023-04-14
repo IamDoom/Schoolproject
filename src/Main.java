@@ -283,12 +283,24 @@ class quote extends MaakOp{
     }
 
     public void setQuoteDetails(){
-        System.out.println("wat wilt in de offerte invoeren?");
-        String input = scanner.nextLine().strip();
-        switch(input.toLowerCase()){
-            case "ordernummer" -> setOrderNumber();
-            case "klanttype" -> PickCustomer();
-            case "boot" -> this.boat = Pickboat();
+        System.out.println("wat wilt u in de offerte invoeren?");
+        boolean shell = true;
+        while(shell) {
+            String input = scanner.nextLine().strip();
+            switch (input.toLowerCase()) {
+                case "ordernummer" -> setOrderNumber();
+                case "klanttype" -> PickCustomer();
+                case "boot" -> this.boat = Pickboat();
+                case "exit" -> shell = false;
+                case "help" -> {
+                    System.out.println("<ordernummer> 'zet de ordernummer vast'");
+                    System.out.println("<klanttype> 'selecteerd klanttype'");
+                    System.out.println("<boot> 'selecteerd gewenste boot'");
+                    System.out.println("<exit> u keer terug naar het basis menu");
+                }
+                default -> System.out.println("voer een geldige keuze in, 'help' voor help");
+
+            }
         }
     }
 
@@ -342,12 +354,12 @@ class quote extends MaakOp{
         OnthoudenVanNumbers onthoudenVanNumbers = this.calculateTotalOfParts();
         System.out.println("de volgende offerte is een simpele opmaak voor een boot");
         System.out.println("dit is niet per se een definitieve versie\n");
-
+        System.out.println("informatie van de klant");
         tekstOpmaken("clientname: ", klant.getNaam());
         tekstOpmaken("ordernummer: ",getOrderNumber());
         tekstOpmaken("klantentype: ", klant.getKlantentype().getNaam());
 
-        System.out.println("boot informatie.");
+        System.out.println("\ninformatie van de boot");
         tekstOpmaken("boottype: ", boat.getType());
         tekstOpmaken("bootnaam: ", boat.getName());
         tekstOpmaken("serienummer: ", boat.getSerialNumber());
@@ -359,14 +371,14 @@ class quote extends MaakOp{
             for (Part part : boat.selectedParts) {
                 MaakOpOnderdeel(part, "list");
             }
-        }
+        }else{tekstOpmaken("onderdelen:", "<niets geselecteerd>");}
         PrijzenOpmaken("Transport kosten:" , this.transportKosten);
-        PrijzenOpmaken("BTW (" + this.btwPercentage + "%):" , (boat.getBasePrice() * this.btwPercentage / 100));
-        PrijzenOpmaken("Totale prijs:" , this.calculateTotal());
-        PrijzenOpmaken("Totale kosten onderdelen:", onthoudenVanNumbers.totaalzonderkorting());
+
+        PrijzenOpmaken("\nTotale kosten onderdelen:", onthoudenVanNumbers.totaalzonderkorting());
         PrijzenOpmaken("Totale kosten onderdelen met korting:", onthoudenVanNumbers.totaalmetkorting());
         PrijzenOpmaken("Totale hoeveelheid korting:", onthoudenVanNumbers.korting());
-
+        PrijzenOpmaken("BTW (" + this.btwPercentage + "%):" , (boat.getBasePrice() * this.btwPercentage / 100));
+        PrijzenOpmaken("Totale prijs:" , this.calculateTotal());
     }
     public double calculateTotal(){
         double vatAmount = boat.totalPrice()*this.btwPercentage/100;
@@ -545,9 +557,9 @@ abstract class MaakOp{
 }
 
 
-class boatList {
+class boatList extends MaakOp{
     Scanner scanner = new Scanner(System.in);
-    public static ArrayList<Boat> boats = new ArrayList<>();
+    public ArrayList<Boat> boats = new ArrayList<>();
 
     Boat brabus = new Boat("speedboat","brabus" ,"qpjwswu2", 100001.0001 );
     Boat lamboat = new Boat("speedboat", "lamboat", "w1qrz6",250000.0002);
