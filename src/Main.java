@@ -269,8 +269,6 @@ class shell{
                     System.out.println("<LIST>     'toont een lijst van beschikbare onderdelen'");
                     System.out.println("<FINALIZE> 'slaat de offerte op en sluit het programma af'");
                     System.out.println("<EXIT>     'sluit het programma af'");
-                    System.out.println("<DISCOUNT> 'voegt korting toe aan een onderdeel");
-                    System.out.println("<DESTROY>  'vernietigd een beschikbaar onderdeel'");
                     System.out.println("<SELECT>   'selecteerd een specifiek onderdeel'");
                 }
 
