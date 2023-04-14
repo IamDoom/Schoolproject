@@ -12,7 +12,7 @@ class Part {
     private double discount;
     private double EcoDiscount;
 
-    Part(){};
+    Part(){}
 
     Part(String name, double price, boolean essential, String description) {
         this.name = name;
@@ -115,7 +115,7 @@ class PartList extends MaakOp {
         System.out.print("welk onderdeel wilt u vernietigen?:");
         String name = scanner.nextLine().strip();
         for(Part part: Parts){
-            if (name == part.getName()) {
+            if (name.equalsIgnoreCase(part.getName())) {
                 Parts.remove(part);
             }else{
                 System.out.println("onderdeel niet gevonden");
@@ -384,10 +384,9 @@ class quote extends MaakOp{
         return orderNumber;
     }
 
-    public String setOrderNumber() {
+    public void setOrderNumber() {
         System.out.print("ordernummer: ");
         orderNumber = scanner.nextLine();
-        return orderNumber;
     }
     public Boat getBoat() {
         return this.boat;
