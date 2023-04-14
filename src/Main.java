@@ -9,7 +9,7 @@ class Part {
     private double price;
     private boolean essential;
     private String description;
-    private double discount;
+
     private double EcoDiscount;
 
     Part(){}
@@ -19,7 +19,7 @@ class Part {
         this.price = price;
         this.essential = essential;
         this.description = description;
-        this.discount = 0.0;
+
         this.EcoDiscount = 0.0;
     }
     Part(String name, double price, boolean essential) {
@@ -32,8 +32,8 @@ class Part {
     public String getDescription(){
         return this.description;
     }
-    public void setEcoDiscount(double discount) {
-        this.discount = discount;
+    public void setEcoDiscount(double Ecodiscount) {
+        this.EcoDiscount = Ecodiscount;
     }
     public double getPrice() {
         return this.price ;
@@ -42,13 +42,10 @@ class Part {
         return this.name;
     }
     public double applyDiscount(){
-        double inverted = 100-this.discount - (this.EcoDiscount);
+        double inverted = 100-this.EcoDiscount;
         return ((inverted/100)*price);
     }
 
-    public double getDiscount() {
-        return discount;
-    }
     public double getEcoDiscount(){return EcoDiscount;}
 
     public boolean getEssential() {
@@ -283,12 +280,24 @@ class quote extends MaakOp{
     }
 
     public void setQuoteDetails(){
-        System.out.println("wat wilt in de offerte invoeren?");
-        String input = scanner.nextLine().strip();
-        switch(input.toLowerCase()){
-            case "ordernummer" -> setOrderNumber();
-            case "klanttype" -> PickCustomer();
-            case "boot" -> this.boat = Pickboat();
+        System.out.println("wat wilt u in de offerte invoeren?");
+        boolean shell = true;
+        while(shell) {
+            String input = scanner.nextLine().strip();
+            switch (input.toLowerCase()) {
+                case "ordernummer" -> setOrderNumber();
+                case "klanttype" -> PickCustomer();
+                case "boot" -> this.boat = Pickboat();
+                case "exit" -> shell = false;
+                case "help" -> {
+                    System.out.println("<ordernummer> 'zet de ordernummer vast'");
+                    System.out.println("<klanttype> 'selecteerd klanttype'");
+                    System.out.println("<boot> 'selecteerd gewenste boot'");
+                    System.out.println("<exit> u keer terug naar het basis menu");
+                }
+                default -> System.out.println("voer een geldige keuze in, 'help' voor help");
+
+            }
         }
     }
 
@@ -332,7 +341,7 @@ class quote extends MaakOp{
     }
     public Boat Pickboat(){
         boatList.displayBoats();
-        System.out.println("welke boot wilt u?");
+        System.out.println("welke boot(naam) wilt u?");
         String Name = scanner.nextLine();
         return boatList.selectBoat(Name);
     }
@@ -342,12 +351,12 @@ class quote extends MaakOp{
         OnthoudenVanNumbers onthoudenVanNumbers = this.calculateTotalOfParts();
         System.out.println("de volgende offerte is een simpele opmaak voor een boot");
         System.out.println("dit is niet per se een definitieve versie\n");
-
+        System.out.println("informatie van de klant");
         tekstOpmaken("clientname: ", klant.getNaam());
         tekstOpmaken("ordernummer: ",getOrderNumber());
         tekstOpmaken("klantentype: ", klant.getKlantentype().getNaam());
 
-        System.out.println("boot informatie.");
+        System.out.println("\ninformatie van de boot");
         tekstOpmaken("boottype: ", boat.getType());
         tekstOpmaken("bootnaam: ", boat.getName());
         tekstOpmaken("serienummer: ", boat.getSerialNumber());
@@ -359,14 +368,15 @@ class quote extends MaakOp{
             for (Part part : boat.selectedParts) {
                 MaakOpOnderdeel(part, "list");
             }
-        }
+        }else{tekstOpmaken("onderdelen:", "<niets geselecteerd>");}
         PrijzenOpmaken("Transport kosten:" , this.transportKosten);
-        PrijzenOpmaken("BTW (" + this.btwPercentage + "%):" , (boat.getBasePrice() * this.btwPercentage / 100));
-        PrijzenOpmaken("Totale prijs:" , this.calculateTotal());
+        System.out.println();
+
         PrijzenOpmaken("Totale kosten onderdelen:", onthoudenVanNumbers.totaalzonderkorting());
         PrijzenOpmaken("Totale kosten onderdelen met korting:", onthoudenVanNumbers.totaalmetkorting());
         PrijzenOpmaken("Totale hoeveelheid korting:", onthoudenVanNumbers.korting());
-
+        PrijzenOpmaken("BTW (" + this.btwPercentage + "%):" , (boat.getBasePrice() * this.btwPercentage / 100));
+        PrijzenOpmaken("Totale prijs:" , this.calculateTotal());
     }
     public double calculateTotal(){
         double vatAmount = boat.totalPrice()*this.btwPercentage/100;
@@ -381,8 +391,8 @@ class quote extends MaakOp{
         double korting;
         for(Part selectedpart : boat.selectedParts) {
             totaalzonderkorting += selectedpart.getPrice();
-            if (selectedpart.getDiscount() != 0) {
-                totaalmetkorting += selectedpart.getPrice() -(selectedpart.getPrice() * selectedpart.getDiscount());
+            if (selectedpart.getEcoDiscount() != 0) {
+                totaalmetkorting += selectedpart.getPrice() -(selectedpart.getPrice() * selectedpart.getEcoDiscount());
 
             }
             else{
@@ -505,10 +515,6 @@ class NieuwKlantentype extends Klantentype{
     NieuwKlantentype(String naam, double hoeveelheidkorting){
         super(naam, hoeveelheidkorting);
     }
-    @Override
-    public void setHoeveelheidkorting(double hoeveelheidkorting) {
-        super.setHoeveelheidkorting(hoeveelheidkorting);
-    }
     public static NieuwKlantentype nieuwklantentype(){ //dit werkt nog niet goed fix ik volgende keer
         NieuwKlantentype nieuwKlantentype = new NieuwKlantentype("Nieuw", 0.0);
         Scanner scanner = new Scanner(System.in);
@@ -541,13 +547,16 @@ abstract class MaakOp{
             }
         }
     }
+    public void MaakOpBoot(Boat boat){
+        System.out.printf("Type: %-17S Naam: %-15s startprijs: %10s\n", boat.getType(),boat.getName(),"€"+boat.getBasePrice());
+    }
 
 }
 
 
-class boatList {
+class boatList extends MaakOp{
     Scanner scanner = new Scanner(System.in);
-    public static ArrayList<Boat> boats = new ArrayList<>();
+    public ArrayList<Boat> boats = new ArrayList<>();
 
     Boat brabus = new Boat("speedboat","brabus" ,"qpjwswu2", 100001.0001 );
     Boat lamboat = new Boat("speedboat", "lamboat", "w1qrz6",250000.0002);
@@ -575,7 +584,8 @@ class boatList {
     public void displayBoats(){
         System.out.println("huidig beschikbare boten: ");
         for(Boat boat: boats){
-            System.out.println(boat.getName());
+            MaakOpBoot(boat);
+
         }
     }
 
