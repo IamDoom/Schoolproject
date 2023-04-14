@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.text.DecimalFormat;
 
 class Part {
+    Scanner scanner = new Scanner(System.in);
     private String name;
     private double price;
     private boolean essential;
     private String description;
-
     private double EcoDiscount;
 
     Part(){}
@@ -19,7 +19,6 @@ class Part {
         this.price = price;
         this.essential = essential;
         this.description = description;
-
         this.EcoDiscount = 0.0;
     }
     Part(String name, double price, boolean essential) {
@@ -51,6 +50,10 @@ class Part {
     public boolean getEssential() {
         return this.essential;
     }
+    public String toString() {
+        return "Name: " + this.name + ", Price: " + this.price + ", Essential: " + this.essential;
+    }
+
 }
 
 class PartList extends MaakOp {
@@ -108,17 +111,9 @@ class PartList extends MaakOp {
         Parts.add(option);
     }
 
-    public void deletePart(){
-        System.out.print("welk onderdeel wilt u vernietigen?:");
-        String name = scanner.nextLine().strip();
-        for(Part part: Parts){
-            if (name.equalsIgnoreCase(part.getName())) {
-                Parts.remove(part);
-            }else{
-                System.out.println("onderdeel niet gevonden");
-            }
-
-        }
+    public void deletePart(Part part){
+        Parts.remove(part);
+        System.out.println(part.getName()+"succesvol vernietigd");
     }
 
     public void displayParts() {
@@ -150,33 +145,13 @@ class PartList extends MaakOp {
             }
         }
     }
-    public void setOptionDiscount() {
-        System.out.print("Welke optie krijgt een nieuwe milieukorting?");
-        String name = scanner.nextLine().strip();
-        for (Part part : Parts) {
-            if (part.getName().equalsIgnoreCase(name)) {
-                System.out.print("Voer het nieuwe percentage in: ");
-                double discount = scanner.nextDouble();
-                scanner.nextLine();
-                part.setEcoDiscount(discount);
-                System.out.println("Milieukorting veranderd!");
-                return;
+    public Part getPart(String name){
+        for(Part part: Parts){
+            if(part.getName().equalsIgnoreCase(name)){
+                return part;
             }
         }
-        for (Part part : Parts) {
-            if (part.getName().equalsIgnoreCase(name)) {
-                System.out.print("Voer het nieuwe percentage in: ");
-                double ecoDiscount = scanner.nextDouble();
-                scanner.nextLine();
-                part.setEcoDiscount(ecoDiscount);
-                System.out.println("Milieukorting veranderd!");
-                return;
-            }
-        }
-        System.out.println("Deze optie is niet beschikbaar!");
-    }
-    public void selectPart(){
-
+        return null;
     }
 }
 class shell{
@@ -192,13 +167,20 @@ class shell{
         while(shell) {
             String input = scanner.nextLine().strip();
             switch (input.toLowerCase()) {
-                case "setup" ->{
+                case "offerte" ->{
                     quote = quote.createQuote();
-                    quote.setQuoteDetails();
+                    quote.setOrderNumber();
+                    quote.PickCustomer();
+                    quote.setBtwPercentage();
+                    boat = quote.Pickboat();
+                    quote.setBoat(boat);
                 }
 
                 case "print" -> {
                     if(quote.getKlant() != null) {
+                        boat = quote.Pickboat();
+                        quote.setBoat(boat);
+                        quote.calculateTotalOfParts();
                         quote.printQuote();
                     }else{
                         System.out.println("u moet eerst een offerte maken om te printen");
@@ -216,17 +198,55 @@ class shell{
                 }
                 case "add" -> {
                     boat = quote.getBoat();
-                    boat.addPart(PartList.getParts());
+                    if(boat != null) {
+                        boat.addPart(PartList.getParts());
+                    }else {
+                        System.out.println("kies eerst een boot");
+                        boat = quote.Pickboat();
+                    }
                 }
-                case "remove" -> boat.RemovePart(PartList.getParts());
+                case "remove" ->{
+                    if(boat != null){
+                        if(boat.selectedParts.size() > 0 ){
+                            boat.RemovePart(PartList.getParts());
+                        }else{
+                            System.out.println("u heeft geen onderdelen om te verwijderen");
+                        }
+                    }else{
+                        System.out.println("u heeft geen boot geselecteerd");
+                    }
+                }
 
-                case "discount" -> PartList.setOptionDiscount();
+                case "boot" -> boat = quote.Pickboat();
 
                 case "list" -> PartList.displayParts();
 
-                case "destroy" -> PartList.deletePart();
+                case "select" -> {
+                    System.out.println("welk onderdeel wilt u selecteren?");
+                    input = scanner.nextLine();
+                    Part part = PartList.getPart(input);
+                    if(part == null){
+                        System.out.println("'"+input+"' bestaat niet.");
+                    }else{
+                        System.out.println("wat wilt u met '"+input+"' doen?");
+                        input = scanner.nextLine();
 
-                case "select" -> PartList.selectPart();
+                        switch(input){
+                            case "korting" -> {
+                                System.out.println("geef de gewenste kortings percentage");
+                                part.setEcoDiscount(scanner.nextDouble());
+                            }
+                            case "beschrijving" -> {
+                                if(part.getDescription() == null){
+                                    System.out.println("er is geen beschrijving beschikbaar");
+                                }else{
+                                    System.out.println(part.getDescription());
+                                }
+                            }
+                            case "vernietig" -> PartList.deletePart(part);
+                        }
+                    }
+                }
 
                 case "finalize" ->{
                     System.out.println("finalizing before shutting down");
@@ -236,7 +256,7 @@ class shell{
                 case "exit" -> shell = false;
 
                 case "help" -> {
-                    System.out.println("<SETUP>    'voor het maken van een offerte'");
+                    System.out.println("<OFFERTE>    'voor het maken van een offerte'");
                     System.out.println("<PRINT>    'print de offerte zoals die er op het moment uit ziet'");
                     System.out.println("<CREATE>   'voor het aanmaken van een onderdeel'");
                     System.out.println("<ADD>      'voegt een bestaand onderdeel toe'");
@@ -257,6 +277,7 @@ class shell{
 class quote extends MaakOp{
     Scanner scanner = new Scanner(System.in);
     boatList boatList = new boatList();
+    PartList partList = new PartList();
     private Klant klant;
     private Date date;
     private String orderNumber;
@@ -278,28 +299,16 @@ class quote extends MaakOp{
         quote newquote = new quote(klant, date);
         return newquote;
     }
-
-    public void setQuoteDetails(){
-        System.out.println("wat wilt u in de offerte invoeren?");
-        boolean shell = true;
-        while(shell) {
-            String input = scanner.nextLine().strip();
-            switch (input.toLowerCase()) {
-                case "ordernummer" -> setOrderNumber();
-                case "klanttype" -> PickCustomer();
-                case "boot" -> this.boat = Pickboat();
-                case "exit" -> shell = false;
-                case "help" -> {
-                    System.out.println("<ordernummer> 'zet de ordernummer vast'");
-                    System.out.println("<klanttype> 'selecteerd klanttype'");
-                    System.out.println("<boot> 'selecteerd gewenste boot'");
-                    System.out.println("<exit> u keer terug naar het basis menu");
-                }
-                default -> System.out.println("voer een geldige keuze in, 'help' voor help");
-
-            }
-        }
+    public void setBtwPercentage(){
+        System.out.println("wat wordt het  btw percentage voor deze klant?");
+        this.btwPercentage = scanner.nextDouble();
     }
+
+    public void setTransportKosten(){
+        System.out.println("wat worden de transport kosten?");
+        this.transportKosten = scanner.nextDouble();
+    }
+
 
     public void PickCustomer() {
         System.out.println("voor welk klantentype wilt u een offerte maken?");
@@ -367,6 +376,7 @@ class quote extends MaakOp{
         if(boat.selectedParts != null) {
             for (Part part : boat.selectedParts) {
                 MaakOpOnderdeel(part, "list");
+                kortingOpmaken(part.getName(), part.getEcoDiscount());
             }
         }else{tekstOpmaken("onderdelen:", "<niets geselecteerd>");}
         PrijzenOpmaken("Transport kosten:" , this.transportKosten);
@@ -529,12 +539,17 @@ class NieuwKlantentype extends Klantentype{
 }
 abstract class MaakOp{
     DecimalFormat df = new DecimalFormat("###,###,##0.000000");
+    DecimalFormat df2 = new DecimalFormat("##0.00");
     public void tekstOpmaken(String input, String variable){
 
         System.out.printf("%-17s %20s\n",input,variable);
     }
     public void PrijzenOpmaken(String input, double getal){
         System.out.printf("%-40s %15s\n",input,"€"+df.format(getal));
+
+    }
+    public void kortingOpmaken(String input, double getal){
+        System.out.printf("%-40S %15s\n",input+" korting:","%"+df2.format(getal));
 
     }
     public void MaakOpOnderdeel(Part part, String type){
@@ -615,6 +630,10 @@ class Boat{
         this.basePrice = basePrice;
     }
 
+
+
+
+
     public double getBasePrice() {
         return basePrice;
     }
@@ -677,6 +696,23 @@ class Boat{
         }
         return null;
     }
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("Type: %s\n", this.type));
+        sb.append(String.format("Naam: %s\n", this.name));
+        sb.append(String.format("Serienummer: %s\n", this.serialNumber));
+        sb.append(String.format("Basiskosten: €%.2f\n", this.basePrice));
+        if(this.selectedParts.size() > 0) {
+            sb.append("Geselecteerde onderdelen:\n");
+            for (Part part : this.selectedParts) {
+                sb.append(String.format("- %s (€%.2f)\n", part.getName(), part.getPrice()));
+            }
+        }
+        sb.append(String.format("Totaalkosten: €%.2f\n", this.totalPrice()));
+        return sb.toString();
+    }
+
 
     public double totalPrice(){
         double totalprice =this.basePrice;
