@@ -50,6 +50,10 @@ class Part {
     public boolean getEssential() {
         return this.essential;
     }
+    public String toString() {
+        return "Name: " + this.name + ", Price: " + this.price + ", Essential: " + this.essential;
+    }
+
 }
 
 class PartList extends MaakOp {
@@ -615,6 +619,10 @@ class Boat{
         this.basePrice = basePrice;
     }
 
+
+
+
+
     public double getBasePrice() {
         return basePrice;
     }
@@ -677,6 +685,23 @@ class Boat{
         }
         return null;
     }
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("Type: %s\n", this.type));
+        sb.append(String.format("Naam: %s\n", this.name));
+        sb.append(String.format("Serienummer: %s\n", this.serialNumber));
+        sb.append(String.format("Basiskosten: €%.2f\n", this.basePrice));
+        if(this.selectedParts.size() > 0) {
+            sb.append("Geselecteerde onderdelen:\n");
+            for (Part part : this.selectedParts) {
+                sb.append(String.format("- %s (€%.2f)\n", part.getName(), part.getPrice()));
+            }
+        }
+        sb.append(String.format("Totaalkosten: €%.2f\n", this.totalPrice()));
+        return sb.toString();
+    }
+
 
     public double totalPrice(){
         double totalprice =this.basePrice;
