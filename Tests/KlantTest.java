@@ -3,7 +3,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class KlantTest {
-
+//hier wordt er een klant en bedrijf aangemaakt.
     @Test
     void testKlant() {
         Klant klant = new Klant("Magdi", new Bedrijf("Bedrijf"));
@@ -15,6 +15,7 @@ class KlantTest {
     }
 
     @Test
+    //hier wordt gekeken of de getters en setters werken van de klasse Klant
     void testGetters() {
         Klant klant = new Klant("Mootje");
         klant.setNaam("Mootje");
@@ -25,6 +26,7 @@ class KlantTest {
     }
 
     @Test
+    //hier wordt gekeken of er er een nieuwe klantentype aangemaakt kan worden.
     void testKlantentype() {
         Klantentype particulier = new Particulier("Particulier");
         assertEquals(particulier.getNaam(),"Particulier");

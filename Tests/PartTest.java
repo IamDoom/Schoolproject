@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class PartTest {
 
     @Test
+    //hier wordt er een odnerdeel gemaakt en gekeken of de individuelen onderdelen ervan opgevraagt kunnen worden
     public void testPart() {
         Part part = new Part("test part", 10.0, true, "description");
         assertEquals("description", part.getDescription());
