@@ -253,7 +253,10 @@ class shell{
                                         }
                                     }
                                     case "vernietig" -> PartList.deletePart(part);
-                                    case "exit" -> selection = false;
+                                    case "exit" -> {
+                                        selection = false;
+                                        subselect = false;
+                                    }
                                     case "help" -> {
                                         System.out.println("<KORTING>      'plaats korting naar keuze op geselecteerd onderdeel'");
                                         System.out.println("<BESCHRIJVING> 'toont beschrijving onderdeel indien mogelijk'");
