@@ -180,13 +180,21 @@ class shell{
                     }
                 }
                 case "create" -> {
-                    System.out.println("wat wilt u maken?");
-                    input = scanner.nextLine();
-                    switch (input.toLowerCase()){
-                        case "onderdeel" -> PartList.createPart();
-                        //case "boot" -> boatList.createBoat();
-                        case "exit"->{break;}
-                        default -> System.out.println("<onderdeel><boot><exit>");
+                    boolean run = true;
+                    System.out.println("wat wilt u maken?\n<onderdeel><boot><exit>");
+                    while (run) {
+                        input = scanner.nextLine();
+                        switch (input.toLowerCase()) {
+                            case "onderdeel" -> {
+                                PartList.createPart();
+                                run = false;
+                            }
+                            //case "boot" -> boatList.createBoat();
+                            case "exit" -> {
+                                run = false;
+                            }
+                            default -> System.out.println("kies <onderdeel><boot><exit>");
+                        }
                     }
                 }
                 case "add" -> {
@@ -273,8 +281,6 @@ class shell{
                     System.out.println("<LIST>     'toont een lijst van beschikbare onderdelen'");
                     System.out.println("<FINALIZE> 'slaat de offerte op en sluit het programma af'");
                     System.out.println("<EXIT>     'sluit het programma af'");
-                    System.out.println("<DISCOUNT> 'voegt korting toe aan een onderdeel");
-                    System.out.println("<DESTROY>  'vernietigd een beschikbaar onderdeel'");
                     System.out.println("<SELECT>   'selecteerd een specifiek onderdeel'");
                 }
 
