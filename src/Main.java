@@ -199,8 +199,13 @@ class shell{
                     quote.setQuoteDetails();
                 }
 
-                case "print" -> quote.printQuote();
-
+                case "print" -> {
+                    if(quote.getKlant() != null) {
+                        quote.printQuote();
+                    }else{
+                        System.out.println("u moet eerst een offerte maken om te printen");
+                    }
+                }
                 case "create" -> PartList.createPart();
 
                 case "add" -> {
@@ -269,10 +274,13 @@ class quote extends MaakOp{
     }
 
     public void setQuoteDetails(){
-        setOrderNumber();
-        PickCustomer();
-        this.boat = Pickboat();
-
+        System.out.println("wat wilt in de offerte invoeren?");
+        String input = scanner.nextLine().strip();
+        switch(input.toLowerCase()){
+            case "ordernummer" -> setOrderNumber();
+            case "klanttype" -> PickCustomer();
+            case "boot" -> this.boat = Pickboat();
+        }
     }
 
     public void PickCustomer(){
@@ -385,7 +393,7 @@ class quote extends MaakOp{
     }
 
     public void setOrderNumber() {
-        System.out.print("ordernummer: ");
+        System.out.print("voer gewenste ordernummer in: ");
         orderNumber = scanner.nextLine();
     }
     public Boat getBoat() {
