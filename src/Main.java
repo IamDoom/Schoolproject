@@ -197,6 +197,8 @@ class shell{
 
                 case "list" -> PartList.displayParts();
 
+                //case "edit" -> ;
+
                 case "finalize" ->{
                     System.out.println("finalizing before shutting down");
                     shell = false;
@@ -289,32 +291,6 @@ class quote extends MaakOp{
         return boatList.selectBoat(Name);
     }
 
-    public double calculateTotal(){
-        double vatAmount = boat.totalPrice()*this.btwPercentage/100;
-        this.totaalprijs = boat.totalPrice()+vatAmount+this.transportKosten;
-        return this.totaalprijs;
-    }
-    public OnthoudenVanNumbers calculateTotalOfParts(){ //je kunt dit gebruiken als berekening van de prijs van de onderdelen
-        double totaalzonderkorting = 0; // maak eerst een nieuw Onthoudenvannummers object aan en stel hem gelijk aan je quote.calculateTotalOfParts
-        double totaalmetkorting = 0; //dan kun je getter gebruiken om de gegeven te accessen
-        double korting = 0;
-        for(Part selectedpart : boat.selectedParts) {
-            totaalzonderkorting += selectedpart.getPrice();
-            if (selectedpart.getDiscount() != 0) {
-                totaalmetkorting += selectedpart.getPrice() * selectedpart.getDiscount();
-
-            }
-            else{
-                totaalmetkorting += selectedpart.getPrice();
-
-            }
-
-        }
-        korting = totaalzonderkorting - totaalmetkorting;
-        OnthoudenVanNumbers onthoudenVanNumbers = new OnthoudenVanNumbers(totaalzonderkorting, totaalmetkorting, korting);
-        return onthoudenVanNumbers;
-
-    }
 
     public void printQuote(){
 
@@ -342,15 +318,34 @@ class quote extends MaakOp{
         PrijzenOpmaken("BTW (" + this.btwPercentage + "%):" , (boat.getBasePrice() * this.btwPercentage / 100));
         PrijzenOpmaken("Totale prijs:" , this.calculateTotal());
     }
+    public double calculateTotal(){
+        double vatAmount = boat.totalPrice()*this.btwPercentage/100;
+        this.totaalprijs = boat.totalPrice()+vatAmount+this.transportKosten;
+        return this.totaalprijs;
+    }
 
 
+    public OnthoudenVanNumbers calculateTotalOfParts(){ //je kunt dit gebruiken als berekening van de prijs van de onderdelen
+        double totaalzonderkorting = 0; // maak eerst een nieuw Onthoudenvannummers object aan en stel hem gelijk aan je quote.calculateTotalOfParts
+        double totaalmetkorting = 0; //dan kun je getter gebruiken om de gegeven te accessen
+        double korting = 0;
+        for(Part selectedpart : boat.selectedParts) {
+            totaalzonderkorting += selectedpart.getPrice();
+            if (selectedpart.getDiscount() != 0) {
+                totaalmetkorting += selectedpart.getPrice() * selectedpart.getDiscount();
 
+            }
+            else{
+                totaalmetkorting += selectedpart.getPrice();
 
+            }
 
+        }
+        korting = totaalzonderkorting - totaalmetkorting;
+        OnthoudenVanNumbers onthoudenVanNumbers = new OnthoudenVanNumbers(totaalzonderkorting, totaalmetkorting, korting);
+        return onthoudenVanNumbers;
 
-
-
-
+    }
     public Klant getKlant() {
         return klant;
     }
