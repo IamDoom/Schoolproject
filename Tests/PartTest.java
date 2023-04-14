@@ -10,16 +10,16 @@ public class PartTest {
 
         part.setDescription("new test description");
 
-        assertEquals("new test description", part.getDescription());
+        assertEquals(part.getDescription(),"new test description");
 
-        assertEquals(10.0, part.getPrice());
+        assertEquals(part.getPrice(),10.0);
 
-        assertEquals("test part", part.getName());
+        assertEquals( part.getName(),"test part");
 
         assertEquals(10.0, 10.0);
 
-        assertEquals(0.0, part.getEcoDiscount());
+        assertEquals( part.getEcoDiscount(),0.0);
 
-        assertEquals(0.0, part.getEcoDiscount());
+        assertEquals( part.getEcoDiscount(),0.0);
     }
 }

@@ -16,6 +16,6 @@ class boatListTest {
     void testSelectBoat() {
         boatList list = new boatList();
         Boat selectBoat = list.selectBoat("lamboat");
-        assertEquals("lamboat", selectBoat.getName());
+        assertEquals(selectBoat.getName(),"lamboat");
     }
 }
