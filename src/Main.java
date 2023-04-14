@@ -113,7 +113,7 @@ class PartList extends MaakOp {
 
     public void deletePart(Part part){
         Parts.remove(part);
-        System.out.println(part.getName()+"succesvol vernietigd");
+        System.out.println(part.getName()+" succesvol vernietigd");
     }
 
     public void displayParts() {
@@ -271,6 +271,7 @@ class shell{
                 }
                 case "finalize" ->{
                     System.out.println("finalizing before shutting down");
+                    quote.setTransportKosten();
                     quote.printQuote();
                     shell = false;
                 }
