@@ -518,7 +518,7 @@ abstract class MaakOp{
 
 class boatList {
     Scanner scanner = new Scanner(System.in);
-    private ArrayList<Boat> boats = new ArrayList<>();
+    public ArrayList<Boat> boats = new ArrayList<>();
 
     Boat brabus = new Boat("speedboat","brabus" ,"qpjwswu2", 100001.0001 );
     Boat lamboat = new Boat("speedboat", "lamboat", "w1qrz6",250000.0002);
