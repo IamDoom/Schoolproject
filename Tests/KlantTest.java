@@ -6,7 +6,8 @@ class KlantTest {
 //hier wordt er een klant en bedrijf aangemaakt.
     @Test
     void testKlant() {
-        Klant klant = new Klant("Magdi", new Bedrijf("Bedrijf"));
+        Bedrijf bedrijf = new Bedrijf("Bedrijf");
+        Klant klant = new Klant("Magdi", bedrijf);
         assertEquals("Magdi","Magdi");
         assertEquals("Bedrijf","Bedrijf");
 
