@@ -325,8 +325,14 @@ class quote extends MaakOp{
         tekstOpmaken("ordernummer: ",getOrderNumber());
         tekstOpmaken("klantentype: ", klant.getKlantentype().getNaam());
 
-        System.out.println("\nofferte basis prijs van een boot");
+        System.out.println("boot informatie.");
+        tekstOpmaken("boottype: ", boat.getType());
+        tekstOpmaken("bootnaam: ", boat.getName());
+        tekstOpmaken("serienummer: ", boat.getSerialNumber());
+        System.out.println("\nbasis prijs van de boot");
         PrijzenOpmaken("Boot start prijs:", boat.getBasePrice());
+
+        System.out.println("\nkosten onderdelen: ");
         if(boat.selectedParts != null) {
             for (Part part : boat.selectedParts) {
                 MaakOpOnderdeel(part, "list");
@@ -474,8 +480,8 @@ class NieuwKlantentype extends Klantentype{
 abstract class MaakOp{
     DecimalFormat df = new DecimalFormat("###,###,##0.000000");
     public void tekstOpmaken(String input, String variable){
-        System.out.print(input);
-        System.out.printf("%20s\n",variable);
+
+        System.out.printf("%-17s %20s\n",input,variable);
     }
     public void PrijzenOpmaken(String input, double getal){
         System.out.printf("%-40s %15s\n",input,"€"+df.format(getal));
@@ -500,7 +506,7 @@ class boatList {
     private ArrayList<Boat> boats = new ArrayList<>();
 
     Boat brabus = new Boat("speedboat","brabus" ,"qpjwswu2", 100001.0001 );
-    Boat lamboat = new Boat("speedboat", "lamboat", "w1qrz6",250.0002);
+    Boat lamboat = new Boat("speedboat", "lamboat", "w1qrz6",250000.0002);
     Boat seabaru = new Boat("raceboat","seabaru","ql0p7za",1000000.00004);
 
     public boatList(){
