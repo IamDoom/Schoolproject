@@ -178,6 +178,9 @@ class shell{
 
                 case "print" -> {
                     if(quote.getKlant() != null) {
+                        boat = quote.Pickboat();
+                        quote.setBoat(boat);
+                        quote.calculateTotalOfParts();
                         quote.printQuote();
                     }else{
                         System.out.println("u moet eerst een offerte maken om te printen");
