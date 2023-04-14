@@ -242,6 +242,7 @@ class shell{
                                         System.out.println("geef de gewenste kortings percentage");
                                         part.setEcoDiscount(scanner.nextDouble());
                                         scanner.nextLine().strip();
+                                        System.out.println("het onderdeel " + part.getName() + " heeft nu " + part.getEcoDiscount() + "% korting");
                                         selection = false;
                                         subselect = false;
                                     }
