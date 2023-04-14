@@ -190,9 +190,12 @@ class shell{
         while(shell) {
             String input = scanner.nextLine().strip();
             switch (input.toLowerCase()) {
-                case "setup" ->{
+                case "offerte" ->{
                     quote = quote.createQuote();
-                    quote.setQuoteDetails();
+                    quote.setOrderNumber();
+                    quote.PickCustomer();
+                    boat = quote.Pickboat();
+                    quote.setBoat(boat);
                 }
 
                 case "print" -> {
@@ -212,6 +215,29 @@ class shell{
                         default -> System.out.println("<onderdeel><boot><exit>");
                     }
                 }
+                case "add" -> {
+                    boat = quote.getBoat();
+                    if(boat != null) {
+                        boat.addPart(PartList.getParts());
+                    }else {
+                        System.out.println("kies eerst een boot");
+                        boat = quote.Pickboat();
+                    }
+                }
+                case "remove" ->{
+                    if(boat != null){
+                        if(boat.selectedParts.size() > 0 ){
+                            boat.RemovePart(PartList.getParts());
+                        }else{
+                            System.out.println("u heeft geen onderdelen om te verwijderen");
+                        }
+                    }else{
+                        System.out.println("u heeft geen boot geselecteerd");
+                    }
+                }
+
+                case "boot" -> boat = quote.Pickboat();
+
                 case "discount" -> PartList.setOptionDiscount();
 
                 case "list" -> PartList.displayParts();
@@ -228,7 +254,7 @@ class shell{
                 case "exit" -> shell = false;
 
                 case "help" -> {
-                    System.out.println("<SETUP>    'voor het maken van een offerte'");
+                    System.out.println("<OFFERTE>    'voor het maken van een offerte'");
                     System.out.println("<PRINT>    'print de offerte zoals die er op het moment uit ziet'");
                     System.out.println("<CREATE>   'voor het aanmaken van een onderdeel'");
                     System.out.println("<ADD>      'voegt een bestaand onderdeel toe'");
@@ -270,49 +296,6 @@ class quote extends MaakOp{
         Date date = new Date();
         quote newquote = new quote(klant, date);
         return newquote;
-    }
-
-    public void setQuoteDetails(){
-        System.out.println("wat wilt u in de offerte invoeren?");
-        boolean shell = true;
-        while(shell) {
-            String input = scanner.nextLine().strip();
-            switch (input.toLowerCase()) {
-                case "ordernummer" -> setOrderNumber();
-                case "klanttype" -> PickCustomer();
-                case "boot" -> this.boat = Pickboat();
-                case "exit" -> shell = false;
-                case "add" ->{
-                    if(boat != null) {
-                        boat.addPart(partList.getParts());
-                    }else {
-                        System.out.println("kies eerst een boot");
-                        this.boat = Pickboat();
-                    }
-                }
-                case "remove" ->{
-                    if(boat != null){
-                        if(boat.selectedParts.size() > 0 ){
-                            boat.RemovePart(partList.getParts());
-                        }else{
-                            System.out.println("u heeft geen onderdelen om te verwijderen");
-                        }
-                    }else{
-                        System.out.println("u heeft geen boot geselecteerd");
-                    }
-                }
-                case "help" -> {
-                    System.out.println("<ADD>         'voegt een onderdeel toe aan uw boot'");
-                    System.out.println("<REMOVE>     'verwijdert onderdelen van uw boot'");
-                    System.out.println("<ORDERNUMMER> 'zet de ordernummer vast'");
-                    System.out.println("<KLANTTYPE>   'selecteerd klanttype'");
-                    System.out.println("<BOOT>        'selecteerd gewenste boot'");
-                    System.out.println("<EXIT>        'u keer terug naar het basis menu'");
-                }
-                default -> System.out.println("voer een geldige keuze in, 'help' voor help");
-
-            }
-        }
     }
 
     public void PickCustomer() {
