@@ -111,17 +111,9 @@ class PartList extends MaakOp {
         Parts.add(option);
     }
 
-    public void deletePart(){
-        System.out.print("welk onderdeel wilt u vernietigen?:");
-        String name = scanner.nextLine().strip();
-        for(Part part: Parts){
-            if (name.equalsIgnoreCase(part.getName())) {
-                Parts.remove(part);
-            }else{
-                System.out.println("onderdeel niet gevonden");
-            }
-
-        }
+    public void deletePart(Part part){
+        Parts.remove(part);
+        System.out.println(part.getName()+"succesvol vernietigd");
     }
 
     public void displayParts() {
@@ -179,6 +171,7 @@ class shell{
                     quote = quote.createQuote();
                     quote.setOrderNumber();
                     quote.PickCustomer();
+                    quote.setBtwPercentage();
                     boat = quote.Pickboat();
                     quote.setBoat(boat);
                 }
@@ -225,8 +218,6 @@ class shell{
 
                 case "list" -> PartList.displayParts();
 
-                case "destroy" -> PartList.deletePart();
-
                 case "select" -> {
                     System.out.println("welk onderdeel wilt u selecteren?");
                     input = scanner.nextLine();
@@ -236,6 +227,7 @@ class shell{
                     }else{
                         System.out.println("wat wilt u met '"+input+"' doen?");
                         input = scanner.nextLine();
+
                         switch(input){
                             case "korting" -> {
                                 System.out.println("geef de gewenste kortings percentage");
@@ -248,7 +240,7 @@ class shell{
                                     System.out.println(part.getDescription());
                                 }
                             }
-
+                            case "vernietig" -> PartList.deletePart(part);
                         }
                     }
                 }
@@ -304,6 +296,16 @@ class quote extends MaakOp{
         quote newquote = new quote(klant, date);
         return newquote;
     }
+    public void setBtwPercentage(){
+        System.out.println("wat wordt het  btw percentage voor deze klant?");
+        this.btwPercentage = scanner.nextDouble();
+    }
+
+    public void setTransportKosten(){
+        System.out.println("wat worden de transport kosten?");
+        this.transportKosten = scanner.nextDouble();
+    }
+
 
     public void PickCustomer() {
         System.out.println("voor welk klantentype wilt u een offerte maken?");
@@ -371,6 +373,7 @@ class quote extends MaakOp{
         if(boat.selectedParts != null) {
             for (Part part : boat.selectedParts) {
                 MaakOpOnderdeel(part, "list");
+                kortingOpmaken(part.getName(), part.getEcoDiscount());
             }
         }else{tekstOpmaken("onderdelen:", "<niets geselecteerd>");}
         PrijzenOpmaken("Transport kosten:" , this.transportKosten);
@@ -533,12 +536,17 @@ class NieuwKlantentype extends Klantentype{
 }
 abstract class MaakOp{
     DecimalFormat df = new DecimalFormat("###,###,##0.000000");
+    DecimalFormat df2 = new DecimalFormat("##0.00");
     public void tekstOpmaken(String input, String variable){
 
         System.out.printf("%-17s %20s\n",input,variable);
     }
     public void PrijzenOpmaken(String input, double getal){
         System.out.printf("%-40s %15s\n",input,"€"+df.format(getal));
+
+    }
+    public void kortingOpmaken(String input, double getal){
+        System.out.printf("%-40S %15s\n",input+" korting:","%"+df2.format(getal));
 
     }
     public void MaakOpOnderdeel(Part part, String type){
