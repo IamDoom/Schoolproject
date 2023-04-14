@@ -292,25 +292,29 @@ class quote extends MaakOp{
         }
     }
 
-    public void PickCustomer(){
+    public void PickCustomer() {
         System.out.println("voor welk klantentype wilt u een offerte maken?");
         System.out.println("'bedrijf' 'overheid' 'particulier' 'nieuw' (nieuw klantentype)");
         String klantentype = scanner.nextLine().strip();
 
-        switch (klantentype.toUpperCase()){
-            case "BEDRIJF" ->{
+        boolean ValidInput = false;
+        while(!ValidInput) {
+            if (klantentype.equalsIgnoreCase("BEDRIJF")) {
                 Bedrijf bedrijf = new Bedrijf("Bedrijf");
                 klant.setKlantentype(bedrijf);
+                ValidInput = true;
             }
-            case "OVERHEID" ->{
+            else if (klantentype.equalsIgnoreCase("OVERHEID")) {
                 Overheid overheid = new Overheid("Overheid");
                 klant.setKlantentype(overheid);
+                ValidInput = true;
             }
-            case "PARTICULIER"->{
+            else if (klantentype.equalsIgnoreCase("PARTICULIER")) {
                 Particulier particulier = new Particulier("Particulier");
                 klant.setKlantentype(particulier);
+                ValidInput = true;
             }
-            case "NIEUW" ->{
+            else if (klantentype.equalsIgnoreCase("NIEUW")) {
                 System.out.println("wat is de naam van het nieuwe klantentype?");
                 String naamklantentype = scanner.nextLine();
                 System.out.println("wat is de hoeveelheid korting voor dit klantentype?");
@@ -318,8 +322,12 @@ class quote extends MaakOp{
                 NieuwKlantentype nieuwKlantentype = new NieuwKlantentype(naamklantentype, korting);
                 klant.setKlantentype(nieuwKlantentype);
                 scanner.nextLine();
+                ValidInput = true;
             }
-            default -> System.out.println("kies een geldige optie\n'bedrijf' 'overheid' 'particulier' 'nieuw'");
+            else {
+                System.out.println("kies een geldige optie\n'bedrijf' 'overheid' 'particulier' 'nieuw'");
+                break;
+            }
         }
     }
     public Boat Pickboat(){
@@ -331,7 +339,7 @@ class quote extends MaakOp{
 
 
     public void printQuote(){
-
+        OnthoudenVanNumbers onthoudenVanNumbers = this.calculateTotalOfParts();
         System.out.println("de volgende offerte is een simpele opmaak voor een boot");
         System.out.println("dit is niet per se een definitieve versie\n");
 
@@ -355,6 +363,10 @@ class quote extends MaakOp{
         PrijzenOpmaken("Transport kosten:" , this.transportKosten);
         PrijzenOpmaken("BTW (" + this.btwPercentage + "%):" , (boat.getBasePrice() * this.btwPercentage / 100));
         PrijzenOpmaken("Totale prijs:" , this.calculateTotal());
+        PrijzenOpmaken("Totale kosten onderdelen:", onthoudenVanNumbers.totaalzonderkorting());
+        PrijzenOpmaken("Totale kosten onderdelen met korting:", onthoudenVanNumbers.totaalmetkorting());
+        PrijzenOpmaken("Totale hoeveelheid korting:", onthoudenVanNumbers.korting());
+
     }
     public double calculateTotal(){
         double vatAmount = boat.totalPrice()*this.btwPercentage/100;
@@ -366,11 +378,11 @@ class quote extends MaakOp{
     public OnthoudenVanNumbers calculateTotalOfParts(){ //je kunt dit gebruiken als berekening van de prijs van de onderdelen
         double totaalzonderkorting = 0; // maak eerst een nieuw Onthoudenvannummers object aan en stel hem gelijk aan je quote.calculateTotalOfParts
         double totaalmetkorting = 0; //dan kun je getter gebruiken om de gegeven te accessen
-        double korting = 0;
+        double korting;
         for(Part selectedpart : boat.selectedParts) {
             totaalzonderkorting += selectedpart.getPrice();
             if (selectedpart.getDiscount() != 0) {
-                totaalmetkorting += selectedpart.getPrice() * selectedpart.getDiscount();
+                totaalmetkorting += selectedpart.getPrice() -(selectedpart.getPrice() * selectedpart.getDiscount());
 
             }
             else{
