@@ -54,16 +54,6 @@ public class MaakOpTest extends MaakOp {
     }
 
 
-    @Test
-    public void testPrijzenOpmaken(String input, double getal) {
-        MaakOpTest maakOp = new MaakOpTest();
-        //Act
-        maakOp.PrijzenOpmaken("Test", 1000.0);
-
-        assertEquals("Test Input                                €1,000.000000", "Test Input                                €1,000.000000");
-
-    }
-
 
     @Test
     public void testMaakOpOnderdeel() { // hier wordt er een onderdeel toegevoegt en kijken we of die ook wordt uitgeprint

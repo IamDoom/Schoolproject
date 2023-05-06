@@ -1,18 +1,13 @@
-import java.io.*;
-import java.util.Date;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.text.DecimalFormat;
 
 class Part {
-    Scanner scanner = new Scanner(System.in);
-    private String name;
-    private double price;
-    private boolean essential;
+    private final String name;
+    private final double price;
+    private final boolean essential;
     private String description;
     private double EcoDiscount;
-
-    Part(){}
 
     Part(String name, double price, boolean essential, String description) {
         this.name = name;
@@ -40,10 +35,6 @@ class Part {
     public String getName() {
         return this.name;
     }
-    public double applyDiscount(){
-        double inverted = 100-this.EcoDiscount;
-        return ((inverted/100)*price);
-    }
 
     public double getEcoDiscount(){return EcoDiscount;}
 
@@ -56,104 +47,6 @@ class Part {
 
 }
 
-class PartList extends MaakOp {
-    Scanner scanner = new Scanner(System.in);
-    DecimalFormat df = new DecimalFormat("###,###,##0.000000");
-    private ArrayList<Part> Parts;
-
-    Part Hull = new Part("hull", 2.0,true);
-    Part HullFrame = new Part("hull frame", 2.0,true);
-    Part deck = new Part("deck", 2.0,true);
-    Part cabin = new Part("cabin", 2.0,true);
-    Part LifeBuoys = new Part("life buoys", 2.0,false);
-    Part radio = new Part("radio", 2.0,false);
-    Part radars = new Part("radars", 2.0,false);
-    Part towerCranes = new Part("tower cranes", 2.0,false);
-    Part flagDecor = new Part("flags decoration", 2.0,false);
-
-    public PartList() {
-
-       Parts = new ArrayList<>();
-       Parts.add(Hull);
-       Parts.add(HullFrame);
-       Parts.add(deck);
-       Parts.add(cabin);
-
-        Parts.add(LifeBuoys);
-        Parts.add(radio);
-        Parts.add(radars);
-        Parts.add(towerCranes);
-        Parts.add(flagDecor);
-
-        Hull.setEcoDiscount(0.1);
-        HullFrame.setEcoDiscount(0.1);
-        deck.setEcoDiscount(0.1);
-        cabin.setEcoDiscount(0.1);
-        LifeBuoys.setEcoDiscount(0.1);
-        radio.setEcoDiscount(0.1);
-        radars.setEcoDiscount(0.1);
-        towerCranes.setEcoDiscount(0.1);
-        flagDecor.setEcoDiscount(0.1);
-    }
-
-    public ArrayList<Part> getParts(){
-        return Parts;
-    }
-
-    public void createPart() {
-        System.out.print("Onderdeel naam? ");
-        String name = scanner.nextLine().strip();
-        System.out.print("Prijs? ");
-        double price = scanner.nextDouble();
-        scanner.nextLine(); //to prevent nextdouble from eating;
-        boolean essential = essentialOrNot();
-        Part option = new Part(name, price, essential);
-        Parts.add(option);
-    }
-
-    public void deletePart(Part part){
-        Parts.remove(part);
-        System.out.println(part.getName()+" succesvol vernietigd");
-    }
-
-    public void displayParts() {
-        System.out.println("essentiële opties:");
-        for(Part part: Parts)
-            if(part.getEssential()){
-                MaakOpOnderdeel(part,"list"); //dit moet
-            }
-        System.out.println("extra opties:");
-        for(Part part: Parts){
-            if(!part.getEssential()){
-                MaakOpOnderdeel(part,"list");
-            }
-        }
-    }
-    private boolean essentialOrNot() {
-
-        while (true) {
-            System.out.print("Is deze optie essentieel? ");
-            String input = scanner.nextLine().strip().toLowerCase();
-            switch (input) {
-                case "ja" -> {
-                    return true;
-                }
-                case "nee" -> {
-                    return false;
-                }
-                default -> System.out.println("foutief, voer 'ja' of 'nee'");
-            }
-        }
-    }
-    public Part getPart(String name){
-        for(Part part: Parts){
-            if(part.getName().equalsIgnoreCase(name)){
-                return part;
-            }
-        }
-        return null;
-    }
-}
 class shell{
     Scanner scanner = new Scanner(System.in);
     PartList PartList = new PartList();
@@ -179,6 +72,7 @@ class shell{
                         System.out.println("u moet eerst een offerte maken om te printen");
                     }
                 }
+
                 case "create" -> {
                     boolean run = true;
                     System.out.println("wat wilt u aanmaken?\n<onderdeel><boot><exit>");
@@ -193,9 +87,7 @@ class shell{
                                 quote.boatList.createBoat();
                                 run = false;
                             }
-                            case "exit" -> {
-                                run = false;
-                            }
+                            case "exit" -> run = false;
                             default -> System.out.println("kies <onderdeel><boot><exit>");
                         }
                     }
@@ -304,24 +196,20 @@ class quote extends MaakOp{
     Scanner scanner = new Scanner(System.in);
     boatList boatList = new boatList();
     private Klant klant;
-    private Date date;
     private String orderNumber;
     private Boat boat;
     private double btwPercentage;
     private double transportKosten;
-    private double totaalprijs;
 
     quote(){}
 
 
-    quote(Klant klant, Date date){
+    quote(Klant klant){
         this.klant = klant;
-        this.date = date;
     }
     public static quote createQuote() {
         Klant klant = new Klant();
-        Date date = new Date();
-        return new quote(klant, date);
+        return new quote(klant);
     }
     public void setquoteDetails(){
         setOrderNumber();
@@ -430,14 +318,13 @@ class quote extends MaakOp{
     }
     public double calculateTotal(){
         double vatAmount = boat.totalPrice()*this.btwPercentage/100;
-        this.totaalprijs = boat.totalPrice()+vatAmount+this.transportKosten;
-        return this.totaalprijs;
+        return boat.totalPrice() + vatAmount + this.transportKosten;
     }
 
 
     public OnthoudenVanNumbers calculateTotalOfParts(){ //je kunt dit gebruiken als berekening van de prijs van de onderdelen
         double totaalzonderkorting = 0; // maak eerst een nieuw Onthoudenvannummers object aan en stel hem gelijk aan je quote.calculateTotalOfParts
-        double totaalmetkorting = 0; //dan kun je getter gebruiken om de gegeven te accessen
+        double totaalmetkorting = 0; //dan kun je getter gebruiken om de gegeven de accessen
         double korting;
         for(Part selectedpart : boat.selectedParts) {
             totaalzonderkorting += selectedpart.getPrice();
@@ -450,15 +337,6 @@ class quote extends MaakOp{
         return klant;
     }
 
-    public void setKlant(Klant klant) {
-        this.klant = klant;
-    }
-    public Date getDate() {
-        return date;
-    }
-    public void setDate(Date date) {
-        this.date = date;
-    }
     public String getOrderNumber() {
         return orderNumber;
     }
@@ -500,17 +378,27 @@ class Klant{
     }
 
     public void setKlantentype(Klantentype klantentype) {
+        if (klantentype instanceof Particulier) {
+            System.out.println("Particuliere klant toegevoegd.");
+        } else if (klantentype instanceof Bedrijf) {
+            System.out.println("Bedrijfsklant toegevoegd.");
+        } else if (klantentype instanceof Overheid) {
+            System.out.println("Overheidsklant toegevoegd.");
+        } else {
+            System.out.println("Onbekend klanttype toegevoegd.");
+        }
         this.klantentype = klantentype;
     }
+
 
     public Klantentype getKlantentype() {
         return klantentype;
     }
 }
-abstract class Klantentype{
+ class Klantentype{
 
     private double hoeveelheidkorting;
-    private String Naam;
+    private final String Naam;
 
     Klantentype(String naam){
         this.Naam = naam;
@@ -523,16 +411,10 @@ abstract class Klantentype{
         return this.Naam;
     }
 
-    public void setNaam(String naam){
-        this.Naam = naam;
-    }
     public double getKorting(){
         return hoeveelheidkorting;
     }
 
-    public void setHoeveelheidkorting(double hoeveelheidkorting) {
-        this.hoeveelheidkorting = hoeveelheidkorting;
-    }
 }
 class Particulier extends Klantentype{
     Particulier(String naam){
@@ -555,18 +437,8 @@ class NieuwKlantentype extends Klantentype{
     NieuwKlantentype(String naam, double hoeveelheidkorting){
         super(naam, hoeveelheidkorting);
     }
-    public static NieuwKlantentype nieuwklantentype(){ //dit werkt nog niet goed fix ik volgende keer
-        NieuwKlantentype nieuwKlantentype = new NieuwKlantentype("Nieuw", 0.0);
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("wat is de naam van het nieuwe klantentype?");
-        String naamklantentype = scanner.nextLine();
-        nieuwKlantentype.setNaam(naamklantentype);
-        System.out.println("wat is de hoeveelheid korting voor dit klantentype?");
-        double korting = scanner.nextDouble();
-        nieuwKlantentype.setHoeveelheidkorting(korting);
-        return  nieuwKlantentype;
-    }
 }
+
 abstract class MaakOp{
     DecimalFormat df = new DecimalFormat("###,###,##0.000000");
     DecimalFormat df2 = new DecimalFormat("##0.00");
@@ -584,12 +456,8 @@ abstract class MaakOp{
     }
     public void MaakOpOnderdeel(Part part, String type){
         switch(type) {
-            case "list" -> {
-                System.out.printf("\t%-17S> %33s\n", part.getName(), ">€" + df.format(part.getPrice()));
-            }
-            case"individual" ->{
-                System.out.printf("%-20S %5s %15s\n",part.getName(),"(essentieel)","prijs: "+df.format(part.getPrice()));
-            }
+            case "list" -> System.out.printf("\t%-17S> %33s\n", part.getName(), ">€" + df.format(part.getPrice()));
+            case"individual" -> System.out.printf("%-20S %5s %15s\n",part.getName(),"(essentieel)","prijs: "+df.format(part.getPrice()));
         }
     }
     public void MaakOpBoot(Boat boat){
@@ -647,10 +515,10 @@ class boatList extends MaakOp{
 
 class Boat{
     Scanner scanner = new Scanner(System.in);
-    private String type;
-    private String name;
-    private String serialNumber;
-    private double basePrice;
+    private final String type;
+    private final String name;
+    private final String serialNumber;
+    private final double basePrice;
     public ArrayList<Part> selectedParts = new ArrayList<>();
 
     Boat(String type, String name, String serialNumber, double basePrice){
@@ -668,27 +536,16 @@ class Boat{
         return basePrice;
     }
 
-    public void setBasePrice(double basePrice) {
-        this.basePrice = basePrice;
-    }
-
     public String getType() {
         return type;
     }
-    public void setType(String type) {
-        this.type = type;
-    }
+
     public String getName() {
         return name;
     }
-    public void setName(String name) {
-        this.name = name;
-    }
+
     public String getSerialNumber() {
         return serialNumber;
-    }
-    public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
     }
 
     public void addPart(ArrayList<Part> parts){
